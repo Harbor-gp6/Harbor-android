@@ -1,8 +1,12 @@
+package com.example.apl_mobile_harbor
+
 import android.os.Bundle
+import android.service.autofill.OnClickAction
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,10 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.apl_mobile_harbor.R
-import kotlin.math.round
 
-class MainActivity : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -89,27 +91,34 @@ fun MenuGrid() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MenuCard("Agenda", R.drawable.calendar_month, Modifier.weight(1f))
-            MenuCard("Meu perfil", R.drawable.person_add, Modifier.weight(1f))
+            MenuCard("Agenda", R.drawable.calendar_month, Modifier.weight(1f),
+                handleClick = {/*TODO*/}
+                )
+            MenuCard("Meu perfil", R.drawable.person_add, Modifier.weight(1f),
+                handleClick = {/*TODO*/}
+                )
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MenuCard("Meus serviços", R.drawable.person_add, Modifier.weight(1f))
+            MenuCard("Meus serviços", R.drawable.person_add, Modifier.weight(1f),
+                handleClick = {/*TODO*/}
+                )
         }
     }
 }
 
 @Composable
-fun MenuCard(title: String, iconRes: Int, modifier: Modifier = Modifier) {
+fun MenuCard(title: String, iconRes: Int, modifier: Modifier = Modifier, handleClick: () -> Unit) {
     Card(
         modifier = modifier
             .padding(8.dp)
-            .height(100.dp),
+            .height(100.dp)
+            .clickable(onClick = handleClick),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF0E28AC)
-        )
+        ),
     ) {
         Column(
             modifier = Modifier
