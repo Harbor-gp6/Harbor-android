@@ -130,7 +130,7 @@ fun Tela(name: String, modifier: Modifier = Modifier) {
             supportingText = {
                 Text("Esqueceu a senha?")
             },
-            placeholder = { Text("exemplo@gmail.com") }
+            placeholder = { Text("****") }
         )
 
         Button(
