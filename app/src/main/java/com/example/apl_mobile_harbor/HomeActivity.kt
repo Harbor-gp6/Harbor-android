@@ -1,7 +1,6 @@
 package com.example.apl_mobile_harbor
 
 import android.os.Bundle
-import android.service.autofill.OnClickAction
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -92,9 +91,13 @@ fun MenuGrid() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MenuCard("Agenda", R.drawable.calendar_month, Modifier.weight(1f),
+                weigthLeft = 0.6f,
+                weigthRight = 0.4f,
                 handleClick = {/*TODO*/}
                 )
-            MenuCard("Meu perfil", R.drawable.person_add, Modifier.weight(1f),
+            MenuCard("Meu perfil", R.drawable.finance_mode, Modifier.weight(1f),
+                weigthLeft = 0.6f,
+                weigthRight = 0.4f,
                 handleClick = {/*TODO*/}
                 )
         }
@@ -103,6 +106,8 @@ fun MenuGrid() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MenuCard("Meus serviços", R.drawable.person_add, Modifier.weight(1f),
+                weigthLeft = 0.8f,
+                weigthRight = 0.2f,
                 handleClick = {/*TODO*/}
                 )
         }
@@ -110,7 +115,14 @@ fun MenuGrid() {
 }
 
 @Composable
-fun MenuCard(title: String, iconRes: Int, modifier: Modifier = Modifier, handleClick: () -> Unit) {
+fun MenuCard(
+    title: String,
+    iconRes: Int,
+    modifier: Modifier = Modifier,
+    handleClick: () -> Unit,
+    weigthLeft: Float,
+    weigthRight: Float
+) {
     Card(
         modifier = modifier
             .padding(8.dp)
@@ -129,7 +141,7 @@ fun MenuCard(title: String, iconRes: Int, modifier: Modifier = Modifier, handleC
             Row {
                 Column(
                     modifier = Modifier
-                        .weight(0.6f)
+                        .weight(weigthLeft)
                         .padding(8.dp)
                         .fillMaxSize()
                 ) {
@@ -142,23 +154,25 @@ fun MenuCard(title: String, iconRes: Int, modifier: Modifier = Modifier, handleC
                             modifier = Modifier
                                 .align(Alignment.BottomCenter),
                             color = Color.White,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
                         )
                     }
                 }
                 Box(modifier = Modifier
-                    .weight(0.4f)
+                    .weight(weigthRight)
                     .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 50.dp))
                     .background(Color(0xFFD9D9D9))
                     .height(100.dp)
-                    .width(50.dp)) {
+                    .width(50.dp)
+                    .padding(start = 15.dp, top = 30.dp)) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     Icon(
                         modifier = Modifier
                             .size(24.dp),
                         painter = painterResource(id = iconRes),
                         contentDescription = null,
-                        tint = Color(0xFF3A65DF)
+                        tint = Color(0xFF3A65DF),
                     )
                 }
                     }
