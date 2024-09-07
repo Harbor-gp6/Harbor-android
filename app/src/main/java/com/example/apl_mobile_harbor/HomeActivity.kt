@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,14 +65,13 @@ fun Header() {
             modifier = Modifier.size(30.dp)
         )
         Text(
-            text = "Bem-vindo\nTiago",
-            textAlign = TextAlign.Center,
+            text = "Bem-vindo\nJeremias",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF3A65DF) // Azul do título
         )
         Image(
-            painter = painterResource(id = R.drawable.tiago),
+            painter = painterResource(id = R.drawable.user), // Certifique-se de ter essa imagem no seu drawable
             contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
