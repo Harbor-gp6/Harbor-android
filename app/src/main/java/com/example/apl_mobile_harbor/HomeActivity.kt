@@ -1,5 +1,6 @@
 package com.example.apl_mobile_harbor
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,7 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,7 +68,7 @@ fun Header() {
             modifier = Modifier.size(30.dp)
         )
         Text(
-            text = "Bem-vindo\nJeremias",
+            text = stringResource(R.string.saudacao, "Jeremias"),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF3A65DF) // Azul do título
@@ -82,6 +85,7 @@ fun Header() {
 
 @Composable
 fun MenuGrid() {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -90,12 +94,15 @@ fun MenuGrid() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MenuCard("Agenda", R.drawable.calendar_month, Modifier.weight(1f),
+            MenuCard(R.string.card_agenda, R.drawable.calendar_month, Modifier.weight(1f),
                 weigthLeft = 0.6f,
                 weigthRight = 0.4f,
-                handleClick = {/*TODO*/}
+                handleClick = {
+                    val intent = Intent(context, AgendaActivity::class.java)
+                    context.startActivity(intent)
+                }
                 )
-            MenuCard("Meu perfil", R.drawable.finance_mode, Modifier.weight(1f),
+            MenuCard(title = R.string.card_perfil, R.drawable.finance_mode, Modifier.weight(1f),
                 weigthLeft = 0.6f,
                 weigthRight = 0.4f,
                 handleClick = {/*TODO*/}
@@ -105,7 +112,7 @@ fun MenuGrid() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MenuCard("Meus serviços", R.drawable.person_add, Modifier.weight(1f),
+            MenuCard(R.string.card_servicos, R.drawable.person_add, Modifier.weight(1f),
                 weigthLeft = 0.8f,
                 weigthRight = 0.2f,
                 handleClick = {/*TODO*/}
@@ -116,7 +123,7 @@ fun MenuGrid() {
 
 @Composable
 fun MenuCard(
-    title: String,
+    title: Int,
     iconRes: Int,
     modifier: Modifier = Modifier,
     handleClick: () -> Unit,
@@ -131,6 +138,7 @@ fun MenuCard(
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF0E28AC)
         ),
+        onClick = handleClick
     ) {
         Column(
             modifier = Modifier
@@ -150,7 +158,7 @@ fun MenuCard(
                             .fillMaxSize()
                     ) {
                         Text(
-                            text = title,
+                            text = stringResource(title),
                             modifier = Modifier
                                 .align(Alignment.BottomCenter),
                             color = Color.White,
@@ -189,7 +197,7 @@ fun RecentActivities() {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(text = "Atividade recente", fontWeight = FontWeight.Bold)
+        Text(text = stringResource(R.string.atividade_recente), fontWeight = FontWeight.Bold)
         for (i in 1..4) {
             ActivityItem()
         }
@@ -220,8 +228,12 @@ fun ActivityItem() {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text(text = "Marcos agendou pedido", color = Color.Black, fontWeight = FontWeight.Bold)
-                Text(text = "Corte de cabelo para hoje às 17:00", color = Color.Black)
+                Text(text = stringResource(R.string.pedido_agendado_usuario, "Marcos"), color = Color.Black, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.data_hora_pedido,
+                    "Corte de cabelo",
+                    "hoje", "17:00"),
+                    color = Color.Black
+                )
             }
         }
     }

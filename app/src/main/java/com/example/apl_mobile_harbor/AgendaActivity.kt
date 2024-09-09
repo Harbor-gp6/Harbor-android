@@ -1,4 +1,4 @@
-package com.example.apl_mobile_harbor.ui.theme
+package com.example.apl_mobile_harbor
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,23 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.apl_mobile_harbor.BottomNavigationBar
-import com.example.apl_mobile_harbor.HomeScreen
-import com.example.apl_mobile_harbor.MainContent
-import com.example.apl_mobile_harbor.R
 
 class AgendaActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +61,7 @@ fun AgendaHeader() {
             modifier = Modifier.size(30.dp)
         )
         Text(
-            text = "Agenda",
+            text = stringResource(R.string.pagina_agenda),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
@@ -109,7 +104,7 @@ fun AgendaDateSelector() {
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "Adicionar serviço",
+                    text = stringResource(R.string.botao_adicionar_servico),
                     color = Color.White
                 )
             }
@@ -261,13 +256,13 @@ fun ServicoFilter() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Hora",
+            text = stringResource(R.string.label_hora),
             fontSize = 17.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )
         Text(
-            text = "Serviços agendados",
+            text = stringResource(R.string.label_servicos_agendados),
             fontSize = 17.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
@@ -290,7 +285,7 @@ fun Servicos() {
         Text(
             modifier = Modifier
                 .offset(y = (-40).dp),
-            text = "9:00",
+            text = stringResource(R.string.horario_agendamento, "9:00"),
             fontSize = 17.sp,
             color = Color.Black
         )
@@ -304,7 +299,7 @@ fun Servicos() {
                 )
         ) {
             Text(
-                text = "Corte de Cabelo",
+                text = stringResource(R.string.servicos_agendados_card, "Corte de Cabelo"),
                 color = Color.Black,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
@@ -349,7 +344,7 @@ fun Servicos() {
         Text(
             modifier = Modifier
                 .offset(y = (-60).dp),
-            text = "9:30",
+            text = stringResource(R.string.horario_agendamento, "9:30"),
             fontSize = 17.sp,
             color = Color.LightGray
         )
@@ -365,7 +360,7 @@ fun Servicos() {
         Text(
             modifier = Modifier
                 .offset(y = (-100).dp),
-            text = "12:00",
+            text = stringResource(R.string.horario_agendamento, "12:00"),
             fontSize = 17.sp,
             color = Color.Black
         )
@@ -379,7 +374,7 @@ fun Servicos() {
                 )
         ) {
             Text(
-                text = "Barba",
+                text = stringResource(R.string.servicos_agendados_card, "Barba"),
                 color = Color.Black,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
@@ -403,7 +398,7 @@ fun Servicos() {
             Text(
                 modifier = Modifier
                     .offset(x = 40.dp, y = 28.dp),
-                text = "Guilherme Nascimento",
+                text = stringResource(R.string.servicos_agendados_card, "Guilherme Nascimento"),
                 fontSize = 15.sp,
                 color = Color.Black
             )
@@ -424,7 +419,7 @@ fun Servicos() {
         Text(
             modifier = Modifier
                 .offset(y = (-120).dp),
-            text = "12:30",
+            text = stringResource(R.string.horario_agendamento, "12:30"),
             fontSize = 17.sp,
             color = Color.LightGray
         )
@@ -439,7 +434,7 @@ fun Servicos() {
         Text(
             modifier = Modifier
                 .offset(y = (-150).dp),
-            text = "14:00",
+            text = stringResource(R.string.horario_agendamento, "14:00"),
             fontSize = 17.sp,
             color = Color.Black
         )
@@ -453,7 +448,7 @@ fun Servicos() {
                 )
         ) {
             Text(
-                text = "Lavar a cabeça",
+                text = stringResource(R.string.servicos_agendados_card, "Lavar a cabeça"),
                 color = Color.Black,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
@@ -477,7 +472,7 @@ fun Servicos() {
             Text(
                 modifier = Modifier
                     .offset(x = 40.dp, y = 28.dp),
-                text = "Luka Caetano",
+                text = stringResource(R.string.servicos_agendados_card, "Luka Caetano"),
                 fontSize = 15.sp,
                 color = Color.Black
             )
@@ -498,7 +493,7 @@ fun Servicos() {
         Text(
             modifier = Modifier
                 .offset(y = (-170).dp),
-            text = "14:30",
+            text = stringResource(R.string.horario_agendamento, "14:30"),
             fontSize = 17.sp,
             color = Color.LightGray
         )
@@ -508,6 +503,6 @@ fun Servicos() {
 
 @Preview(showSystemUi = true)
 @Composable
-fun MaterialThemePreview() {
+fun AgendaPreview() {
     AgendaScreen()
 }
