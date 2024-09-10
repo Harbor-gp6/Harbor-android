@@ -13,6 +13,31 @@
         android:theme="@style/Theme.Aplmobileharbor"
         tools:targetApi="31">
         <activity
+            android:name=".BaixaPositivaActivity"
+            android:exported="false"
+            android:label="@string/title_activity_baixa_positiva"
+            android:theme="@style/Theme.Aplmobileharbor" />
+        <activity
+            android:name=".BaixaPositivaActivity.kt"
+            android:exported="false"
+            android:label="@string/title_activity_baixa_positiva_activity.kt"
+            android:theme="@style/Theme.Aplmobileharbor" />
+        <activity
+            android:name=".BaixaNegativaActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_baixa_negativa2"
+            android:theme="@style/Theme.Aplmobileharbor" />
+        <activity
+            android:name=".ServicosActivity"
+            android:exported="false"
+            android:label="@string/title_activity_servicos"
+            android:theme="@style/Theme.Aplmobileharbor" />
+        <activity
+            android:name=".PerfilActivity"
+            android:exported="false"
+            android:label="@string/title_activity_perfil"
+            android:theme="@style/Theme.Aplmobileharbor" />
+        <activity
             android:name=".AgendaActivity"
             android:exported="false"
             android:label="@string/title_activity_agenda"

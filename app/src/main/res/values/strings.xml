@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">apl-mobile-harbor</string>
     <string name="title_activity_agenda">AgendaActivity</string>
+    <string name="title_activity_perfil">PerfilActivity</string>
+    <string name="title_activity_servicos">ServicosActivity</string>
+    <string name="title_activity_baixa_negativa2">BaixaNegativaActivity2</string>
+    <string name="title_activity_baixa_positiva_activity.kt">BaixaPositivaActivity.kt</string>
+    <string name="title_activity_baixa_positiva">BaixaPositivaActivity</string>
 </resources>

@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +42,7 @@ fun HomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color(0xFFF2F2F2))
     ) {
         Header()
         MenuGrid()
@@ -65,13 +66,14 @@ fun Header() {
             modifier = Modifier.size(30.dp)
         )
         Text(
-            text = "Bem-vindo\nJeremias",
+            text = "Bem-vindo\nTiago",
             fontSize = 24.sp,
+            textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF3A65DF) // Azul do título
+            color = Color(0xFF3A65DF)
         )
         Image(
-            painter = painterResource(id = R.drawable.user), // Certifique-se de ter essa imagem no seu drawable
+            painter = painterResource(id = R.drawable.tiago),
             contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
@@ -212,11 +214,12 @@ fun ActivityItem() {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.user), // Certifique-se de ter essa imagem no seu drawable
+                contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color.White) // Placeholder para a imagem
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
