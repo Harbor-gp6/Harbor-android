@@ -88,7 +88,7 @@ fun MainContent() {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF2F2F2)) // Cor de fundo
+            .background(Color(0xFFF2F2F2))
     ) { innerPadding ->
         Tela(
             name = "Android",

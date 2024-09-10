@@ -1,14 +1,19 @@
 <resources>
     <string name="app_name">apl-mobile-harbor</string>
     <string name="title_activity_agenda">AgendaActivity</string>
+    <string name="title_activity_perfil">PerfilActivity</string>
+    <string name="title_activity_servicos">ServicosActivity</string>
+    <string name="title_activity_baixa_negativa2">BaixaNegativaActivity2</string>
+    <string name="title_activity_baixa_positiva_activity.kt">BaixaPositivaActivity.kt</string>
+    <string name="title_activity_baixa_positiva">BaixaPositivaActivity</string>
     <string name="label_email">Email</string>
     <string name="label_senha">Senha</string>
     <string name="exemplo_email">exemplo@gmail.com</string>
     <string name="esqueceu_senha">Esqueceu a senha?</string>
     <string name="exemplo_senha">*********</string>
     <string name="botao_entrar">Entrar</string>
-    <string name="saudacao">Bem-vindo(a)"\n"%1$s</string>
-    <string name="card_perfil">Meu"\n"perfil</string>
+    <string name="saudacao">Bem-vindo(a)\n%1$s</string>
+    <string name="card_perfil">Meu\nperfil</string>
     <string name="card_servicos">Meus Serviços</string>
     <string name="card_agenda">Agenda</string>
     <string name="atividade_recente">Atividade recente</string>
