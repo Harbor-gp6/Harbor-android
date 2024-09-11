@@ -4,7 +4,6 @@
     <string name="title_activity_perfil">PerfilActivity</string>
     <string name="title_activity_servicos">ServicosActivity</string>
     <string name="title_activity_baixa_negativa2">BaixaNegativaActivity2</string>
-    <string name="title_activity_baixa_positiva_activity.kt">BaixaPositivaActivity.kt</string>
     <string name="title_activity_baixa_positiva">BaixaPositivaActivity</string>
     <string name="label_email">Email</string>
     <string name="label_senha">Senha</string>
@@ -14,7 +13,8 @@
     <string name="botao_entrar">Entrar</string>
     <string name="saudacao">Bem-vindo(a)\n%1$s</string>
     <string name="card_perfil">Meu\nperfil</string>
-    <string name="card_servicos">Meus Serviços</string>
+    <string name="menu_lateral_perfil">Meu perfil</string>
+    <string name="card_servicos">Meus serviços</string>
     <string name="card_agenda">Agenda</string>
     <string name="atividade_recente">Atividade recente</string>
     <string name="pedido_agendado_usuario">%1$s agendou pedido</string>
@@ -25,4 +25,9 @@
     <string name="label_servicos_agendados">Serviços agendados</string>
     <string name="servicos_agendados_card">%1$s</string>
     <string name="horario_agendamento">%1$s</string>
+    <string name="barra_navegacao_home">Home</string>
+    <string name="barra_navegacao_pedidos">Pedidos</string>
+    <string name="barra_navegacao_avaliacoes">Avaliações</string>
+    <string name="todos_os_pedidos">Todos os pedidos</string>
+    <string name="sair">Sair</string>
 </resources>

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,10 +24,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,20 +42,40 @@ class HomeActivity : ComponentActivity() {
 
 @Composable
 fun HomeScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF2F2F2))
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            DrawerContent(modifier = Modifier
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(topEnd = 30.dp, bottomEnd = 30.dp))
+                .width(300.dp)
+            )
+        }
     ) {
-        Header()
-        MenuGrid()
-        RecentActivities()
-        BottomNavigationBar()
+        Scaffold(
+            topBar = {
+                Header { scope.launch { drawerState.open() } }
+            }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(it)
+            ) {
+                MenuGrid()
+                RecentActivities()
+                BottomNavigationBar()
+            }
+        }
     }
 }
 
 @Composable
-fun Header() {
+fun Header(onMenuClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -63,20 +83,21 @@ fun Header() {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.icon),
-            contentDescription = null,
-            modifier = Modifier.size(30.dp)
-        )
+        IconButton(onClick = { onMenuClick() }) {
+            Icon(
+                painter = painterResource(id = R.drawable.icon),
+                contentDescription = null,
+                modifier = Modifier.size(30.dp),
+            )
+        }
         Text(
             text = stringResource(R.string.saudacao, "Jeremias"),
             fontSize = 24.sp,
-            textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF3A65DF)
+            color = Color(0xFF3A65DF) // Azul do título
         )
-        Image(
-            painter = painterResource(id = R.drawable.tiago),
+        Icon(
+            painter = painterResource(id = R.drawable.user), // Certifique-se de ter essa imagem no seu drawable
             contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
@@ -107,7 +128,10 @@ fun MenuGrid() {
             MenuCard(title = R.string.card_perfil, R.drawable.finance_mode, Modifier.weight(1f),
                 weigthLeft = 0.6f,
                 weigthRight = 0.4f,
-                handleClick = {/*TODO*/}
+                handleClick = {
+                    val intent = Intent(context, PerfilActivity::class.java)
+                    context.startActivity(intent)
+                }
                 )
         }
         Row(
@@ -117,7 +141,10 @@ fun MenuGrid() {
             MenuCard(R.string.card_servicos, R.drawable.person_add, Modifier.weight(1f),
                 weigthLeft = 0.8f,
                 weigthRight = 0.2f,
-                handleClick = {/*TODO*/}
+                handleClick = {
+                    val intent = Intent(context, ServicosActivity::class.java)
+                    context.startActivity(intent)
+                }
                 )
         }
     }
@@ -222,12 +249,11 @@ fun ActivityItem() {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.user), // Certifique-se de ter essa imagem no seu drawable
-                contentDescription = null,
+            Box(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
+                    .background(Color.White) // Placeholder para a imagem
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
@@ -243,8 +269,90 @@ fun ActivityItem() {
 }
 
 @Composable
+fun DrawerContent(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .background(Color(0xFFD9D9D9))
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+     {
+        MenuItems(R.drawable.calendar_month, R.string.pagina_agenda,
+            novaPagina = Intent(
+            LocalContext.current, AgendaActivity::class.java
+            )
+        )
+        MenuItems(R.drawable.account_circle, R.string.menu_lateral_perfil,
+            novaPagina = Intent(
+                LocalContext.current, PerfilActivity::class.java
+            )
+        )
+        MenuItems(R.drawable.content_cut, R.string.card_servicos,
+            novaPagina = Intent(
+                LocalContext.current, ServicosActivity::class.java
+            )
+        )
+        MenuItems(R.drawable.orders, R.string.todos_os_pedidos,
+            novaPagina = Intent(
+                LocalContext.current, ServicosActivity::class.java
+            )
+        )
+        MenuItems(R.drawable.star, R.string.barra_navegacao_avaliacoes,
+            novaPagina = Intent(
+                LocalContext.current, AgendaActivity::class.java
+            )
+        )
+        MenuItems(R.drawable.move_item, R.string.sair,
+            novaPagina = Intent(
+                LocalContext.current, MainActivity::class.java
+            )
+        )
+    }
+}
+
+@Composable
+fun MenuItems(icon: Int, page: Int, novaPagina: Intent) {
+    val context = LocalContext.current
+    var color by remember { mutableStateOf(Color.Black) }
+    if (icon == R.drawable.move_item) {
+        color = Color.Red
+    }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = {
+                context.startActivity(novaPagina)
+            })
+    ) {
+        Row(
+            modifier = Modifier
+                .background(Color(0xFFD9D9D9))
+                .padding(16.dp)  // Padding interno do Row
+                .fillMaxWidth(),  // Garante que o Row preencha a largura disponível
+            verticalAlignment = Alignment.CenterVertically,  // Alinha verticalmente
+            horizontalArrangement = Arrangement.Start  // Alinha horizontalmente
+        ) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(24.dp)  // Define o tamanho do ícone
+            )
+            Spacer(modifier = Modifier.width(16.dp))  // Espaço entre ícone e texto
+            Text(
+                text = stringResource(id = page),
+                fontSize = 20.sp,
+                color = color
+            )
+        }
+    }
+}
+
+
+@Composable
 fun BottomNavigationBar() {
     var selectedIndex by remember { mutableStateOf(0) }
+    val context = LocalContext.current
 
     NavigationBar(
         containerColor = Color.White
@@ -257,9 +365,12 @@ fun BottomNavigationBar() {
                     modifier = Modifier.size(20.dp)
                 )
             },
-            label = { Text("Home") },
+            label = { Text(stringResource(R.string.barra_navegacao_home)) },
             selected = selectedIndex == 0,
-            onClick = { selectedIndex = 0 }
+            onClick = {
+                selectedIndex = 0
+                val intent = Intent(context, HomeActivity::class.java)
+            }
         )
         NavigationBarItem(
             icon = {
@@ -269,9 +380,13 @@ fun BottomNavigationBar() {
                     modifier = Modifier.size(20.dp)
                 )
             },
-            label = { Text("Pedidos") },
+            label = { Text(stringResource(R.string.barra_navegacao_pedidos)) },
             selected = selectedIndex == 1,
-            onClick = { selectedIndex = 1 }
+            onClick = {
+                selectedIndex = 1
+                val intent = Intent(context, ServicosActivity::class.java)
+                context.startActivity(intent)
+            }
         )
         NavigationBarItem(
             icon = {
@@ -281,7 +396,7 @@ fun BottomNavigationBar() {
                     modifier = Modifier.size(20.dp)
                 )
             },
-            label = { Text("Avaliações") },
+            label = { Text(stringResource(R.string.barra_navegacao_avaliacoes)) },
             selected = selectedIndex == 2,
             onClick = { selectedIndex = 2 }
         )

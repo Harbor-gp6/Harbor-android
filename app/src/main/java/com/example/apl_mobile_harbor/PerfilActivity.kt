@@ -1,3 +1,5 @@
+package com.example.apl_mobile_harbor
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -5,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.example.apl_mobile_harbor.BottomNavigationBar
 import com.example.apl_mobile_harbor.R
 
-class ProfileActivity : ComponentActivity() {
+class PerfilActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -42,7 +43,7 @@ fun ProfileScreen() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopBar()
+        TopBarPerfil()
         ProfileImageSection()
         ContactInfoSection()
         Spacer(modifier = Modifier.weight(1f))
@@ -51,7 +52,8 @@ fun ProfileScreen() {
 }
 
 @Composable
-fun TopBar() {
+fun TopBarPerfil() {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()

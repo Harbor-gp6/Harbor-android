@@ -18,12 +18,7 @@
             android:label="@string/title_activity_baixa_positiva"
             android:theme="@style/Theme.Aplmobileharbor" />
         <activity
-            android:name=".BaixaPositivaActivity.kt"
-            android:exported="false"
-            android:label="@string/title_activity_baixa_positiva_activity.kt"
-            android:theme="@style/Theme.Aplmobileharbor" />
-        <activity
-            android:name=".BaixaNegativaActivity2"
+            android:name=".BaixaNegativaActivity"
             android:exported="false"
             android:label="@string/title_activity_baixa_negativa2"
             android:theme="@style/Theme.Aplmobileharbor" />
