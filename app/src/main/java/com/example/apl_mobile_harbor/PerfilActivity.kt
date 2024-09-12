@@ -1,10 +1,12 @@
 package com.example.apl_mobile_harbor
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,7 +56,8 @@ fun ProfileScreen() {
 
 @Composable
 fun TopBarPerfil() {
-
+    val context = LocalContext.current
+    val intent = Intent(context, HomeActivity::class.java)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -66,6 +70,7 @@ fun TopBarPerfil() {
             contentDescription = "Back",
             tint = Color.Black,
             modifier = Modifier.size(24.dp)
+                .clickable(onClick = { context.startActivity(intent) })
         )
         Text(
             text = "Meu perfil",

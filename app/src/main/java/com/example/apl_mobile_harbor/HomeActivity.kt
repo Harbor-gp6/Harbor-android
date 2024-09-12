@@ -370,6 +370,7 @@ fun BottomNavigationBar() {
             onClick = {
                 selectedIndex = 0
                 val intent = Intent(context, HomeActivity::class.java)
+                context.startActivity(intent)
             }
         )
         NavigationBarItem(

@@ -1,11 +1,13 @@
 package com.example.apl_mobile_harbor
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -64,6 +67,8 @@ fun ServiceScreen() {
 
 @Composable
 fun TopBarServicos() {
+    val context = LocalContext.current
+    val intent = Intent(context, HomeActivity::class.java)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,6 +81,7 @@ fun TopBarServicos() {
             contentDescription = "Back",
             tint = Color.Black,
             modifier = Modifier.size(24.dp)
+                .clickable(onClick = { context.startActivity(intent) })
         )
         Text(
             text = "Meus serviços",
@@ -127,6 +133,7 @@ fun ContactItem(
     time: String,
     service: String
 ) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -164,7 +171,10 @@ fun ContactItem(
             modifier = Modifier
                 .align(Alignment.TopEnd)
         ) {
-            IconButton(onClick = {}) {
+            IconButton(onClick = {
+                val intent = Intent(context, BaixaPositivaActivity::class.java)
+                context.startActivity(intent)
+            }) {
                 Image(
                     painter = painterResource(id = R.drawable.aceitar),
                     contentDescription = "Confirmar",
@@ -173,7 +183,10 @@ fun ContactItem(
                         .clip(CircleShape)
                 )
             }
-            IconButton(onClick = {}) {
+            IconButton(onClick = {
+                val intent = Intent(context, BaixaNegativaActivity::class.java)
+                context.startActivity(intent)
+            }) {
                 Image(
                     painter = painterResource(id = R.drawable.cancelar),
                     contentDescription = "Negar",

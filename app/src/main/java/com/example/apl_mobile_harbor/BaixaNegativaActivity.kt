@@ -1,5 +1,6 @@
 package com.example.apl_mobile_harbor
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +41,7 @@ class BaixaNegativaActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AplmobileharborTheme {
+                BaixaNegativaScreen()
             }
         }
     }
@@ -56,8 +59,6 @@ fun BaixaNegativaScreen() {
         DetalheBaixaNegativa()
         Spacer(modifier = Modifier.height(100.dp))
         BotoesLateral()
-        Spacer(modifier = Modifier.weight(1f))
-        BottomNavigationBar()
     }
 }
 
@@ -107,6 +108,8 @@ fun DetalheBaixaNegativa() {
 
 @Composable
 fun BotoesLateral() {
+    val context = LocalContext.current
+    val intent = Intent(context, ServicosActivity::class.java)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -114,7 +117,7 @@ fun BotoesLateral() {
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = {},
+            onClick = { context.startActivity(intent) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF6D6767),
                 contentColor = Color.White
@@ -131,7 +134,7 @@ fun BotoesLateral() {
         }
 
         Button(
-            onClick = {},
+            onClick = { context.startActivity(intent) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF4CAF50),
                 contentColor = Color.White
