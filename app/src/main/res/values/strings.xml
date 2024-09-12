@@ -15,6 +15,7 @@
     <string name="card_perfil">Meu\nperfil</string>
     <string name="menu_lateral_perfil">Meu perfil</string>
     <string name="card_servicos">Meus serviços</string>
+    <string name="manter_conectado">Manter conectado</string>
     <string name="card_agenda">Agenda</string>
     <string name="atividade_recente">Atividade recente</string>
     <string name="pedido_agendado_usuario">%1$s agendou pedido</string>
