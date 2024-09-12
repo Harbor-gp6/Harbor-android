@@ -72,7 +72,7 @@ fun DetalheBaixaNegativa() {
         Text(
             modifier = Modifier
                 .fillMaxWidth(),
-            text = "Confirmar serviço prestado?",
+            text = "Confirmar cancelamento de pedido?",
             fontSize = 40.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
@@ -136,7 +136,7 @@ fun BotoesLateral() {
         Button(
             onClick = { context.startActivity(intent) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF4CAF50),
+                containerColor = Color(0xFFF44336),
                 contentColor = Color.White
             ),
             shape = RoundedCornerShape(8.dp),
@@ -146,7 +146,7 @@ fun BotoesLateral() {
                 .height(150.dp)
         ) {
             Text(
-                text = "Dar baixa",
+                text = "Cancelar",
                 fontSize = 20.sp)
         }
     }
