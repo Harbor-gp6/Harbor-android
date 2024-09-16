@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,13 +93,14 @@ fun Header(onMenuClick: () -> Unit) {
             )
         }
         Text(
-            text = stringResource(R.string.saudacao, "Jeremias"),
+            text = stringResource(R.string.saudacao, "Tiago"),
             fontSize = 24.sp,
+            textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF3A65DF) // Azul do título
+            color = Color(0xFF3A65DF)
         )
         Icon(
-            painter = painterResource(id = R.drawable.user), // Certifique-se de ter essa imagem no seu drawable
+            painter = painterResource(id = R.drawable.tiago),
             contentDescription = null,
             modifier = Modifier
                 .size(40.dp)
@@ -249,11 +252,13 @@ fun ActivityItem() {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.user),
+                contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(Color.White) // Placeholder para a imagem
+                    .background(Color.White)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {

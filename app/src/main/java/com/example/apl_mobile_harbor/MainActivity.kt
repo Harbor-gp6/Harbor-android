@@ -141,10 +141,10 @@ fun Tela(name: String, modifier: Modifier = Modifier) {
             placeholder = { Text(stringResource(R.string.exemplo_senha)) }
         )
 
-        Column(modifier = Modifier.padding(start = 42.dp)) {
+        Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(

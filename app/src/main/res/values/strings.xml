@@ -31,4 +31,6 @@
     <string name="barra_navegacao_avaliacoes">Avaliações</string>
     <string name="todos_os_pedidos">Todos os pedidos</string>
     <string name="sair">Sair</string>
+    <string name="title_activity_detalhes_servico">DetalhesServico</string>
+    <string name="title_activity_editar_servico">EditarServico</string>
 </resources>
