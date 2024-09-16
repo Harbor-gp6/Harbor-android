@@ -258,6 +258,7 @@ fun ActivityItem() {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
+                    .background(Color.White)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
