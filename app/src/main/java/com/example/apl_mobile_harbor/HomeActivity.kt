@@ -93,13 +93,13 @@ fun Header(onMenuClick: () -> Unit) {
             )
         }
         Text(
-            text = "Bem-vindo\nTiago",
+            text = stringResource(R.string.saudacao, "Tiago"),
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF3A65DF)
         )
-        Image(
+        Icon(
             painter = painterResource(id = R.drawable.tiago),
             contentDescription = null,
             modifier = Modifier
