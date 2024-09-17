@@ -192,7 +192,7 @@ fun MenuCard(
                         Text(
                             text = stringResource(title),
                             modifier = Modifier
-                                .align(Alignment.BottomCenter),
+                                .align(Alignment.BottomStart),
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp

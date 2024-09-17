@@ -63,7 +63,10 @@ fun ServiceDetailScreen() {
                     contentDescription = "Back",
                     tint = Color.Black,
                     modifier = Modifier.size(24.dp)
-                        .clickable(onClick = {  })
+                        .clickable(onClick = {
+                            val intent = Intent(context, ServicosActivity::class.java)
+                            context.startActivity(intent)
+                        })
                 )
                 Text(
                     text = "José Alves",
