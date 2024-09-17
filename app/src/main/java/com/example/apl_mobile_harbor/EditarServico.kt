@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,9 +87,9 @@ fun EditarServicoScreen() {
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ActionButton(icon = R.drawable.check, text = "Dar baixa no\nserviço")
-            ActionButton(icon = R.drawable.cancel, text = "Cancelar\nserviço")
-            ActionButton(icon = R.drawable.edit, text = "Editar\nserviço")
+            ActionButton(icon = R.drawable.check, text = stringResource(R.string.dar_baixa))
+            ActionButton(icon = R.drawable.cancel, text = stringResource(R.string.cancelar))
+            ActionButton(icon = R.drawable.edit, text = stringResource(R.string.editar))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -101,7 +102,7 @@ fun EditarServicoScreen() {
                 .padding(8.dp)
         ) {
             Text(
-                text = "Detalhes do cliente",
+                text = stringResource(R.string.label_detalhes_cliente),
                 color = Color.DarkGray,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -113,10 +114,10 @@ fun EditarServicoScreen() {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            CustomTextField(label = "Nome completo")
-            CustomTextField(label = "Email")
-            CustomTextField(label = "Telefone")
-            CustomTextField(label = "CPF")
+            CustomTextField(label = stringResource(R.string.label_nome_completo))
+            CustomTextField(label = stringResource(R.string.label_email))
+            CustomTextField(label = stringResource(R.string.label_telefone))
+            CustomTextField(label = stringResource(R.string.label_cpf))
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -131,7 +132,7 @@ fun EditarServicoScreen() {
                 onClick = {  },
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = "Cancelar", color = Color.White)
+                Text(text = stringResource(R.string.botao_cancelar), color = Color.White)
             }
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -140,7 +141,7 @@ fun EditarServicoScreen() {
                 onClick = {  },
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = "Salvar", color = Color.White)
+                Text(text = stringResource(R.string.botao_salvar), color = Color.White)
             }
         }
 

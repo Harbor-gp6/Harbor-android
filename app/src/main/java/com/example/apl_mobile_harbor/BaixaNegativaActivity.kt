@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,7 +73,7 @@ fun DetalheBaixaNegativa() {
         Text(
             modifier = Modifier
                 .fillMaxWidth(),
-            text = "Confirmar cancelamento de pedido?",
+            text = stringResource(R.string.label_confirmar_cancelamento),
             fontSize = 40.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
@@ -85,19 +86,19 @@ fun DetalheBaixaNegativa() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Cliente: Alex Batista",
+                text = stringResource(R.string.label_cliente) + ":"  + " Alex Batista",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black
             )
             Text(
-                text = "Serviço: Corte de cabelo",
+                text = stringResource(R.string.label_servico) + ":" + " Corte de cabelo",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black
             )
             Text(
-                text = "Horário de conclusão: 09:31",
+                text = stringResource(R.string.label_horario_conclusao) + ":" + " 09:31",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black
@@ -129,7 +130,7 @@ fun BotoesLateral() {
                 .height(150.dp)
         ) {
             Text(
-                text = "Voltar",
+                text = stringResource(R.string.botao_voltar),
                 fontSize = 20.sp)
         }
 
@@ -146,7 +147,7 @@ fun BotoesLateral() {
                 .height(150.dp)
         ) {
             Text(
-                text = "Cancelar",
+                text = stringResource(R.string.botao_cancelar),
                 fontSize = 20.sp)
         }
     }

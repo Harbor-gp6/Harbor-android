@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -84,7 +85,7 @@ fun TopBarServicos() {
                 .clickable(onClick = { context.startActivity(intent) })
         )
         Text(
-            text = "Meus serviços",
+            text = stringResource(R.string.label_meus_servicos),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
@@ -105,7 +106,7 @@ fun ServiceInfo() {
         Spacer(modifier = Modifier.height(15.dp))
         ContactItem(
             imageRes = R.drawable.user,
-            name = "Carlos Eduardo",
+            name = "José Alves",
             time = "11:00 - 11:30",
             service = "Barba"
         )
@@ -140,6 +141,10 @@ fun ContactItem(
             .background(Color.White, shape = RoundedCornerShape(8.dp))
             .padding(16.dp)
             .clip(RoundedCornerShape(8.dp))
+            .clickable(onClick = {
+                val intent = Intent(context, DetalhesServico::class.java)
+                context.startActivity(intent)
+            })
     ) {
         Row(
             modifier = Modifier
@@ -164,7 +169,7 @@ fun ContactItem(
             ) {
                 Text(text = name, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0E28AC))
                 Text(text = time, fontSize = 14.sp, color = Color.Gray)
-                Text(text = "Serviço: $service", fontSize = 14.sp, color = Color.Black)
+                Text(text = stringResource(R.string.label_servico) + ":" + " $service", fontSize = 14.sp, color = Color.Black)
             }
         }
         Row(
