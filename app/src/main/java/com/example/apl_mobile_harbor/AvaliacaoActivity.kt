@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,10 +45,11 @@ class AvaliacaoActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AplmobileharborTheme {
-                }
+                AvaliacaoScreen()
             }
         }
     }
+}
 
 @Composable
 fun AvaliacaoScreen() {
@@ -67,7 +69,6 @@ fun AvaliacaoScreen() {
 @Composable
 fun TopBarAvaliacoes() {
     val context = LocalContext.current
-    val intent = Intent(context, HomeActivity::class.java)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,10 +81,13 @@ fun TopBarAvaliacoes() {
             contentDescription = "Back",
             tint = Color.Black,
             modifier = Modifier.size(24.dp)
-                .clickable(onClick = { context.startActivity(intent) })
+                .clickable(onClick = {
+                    val intent = Intent(context, HomeActivity::class.java)
+                    context.startActivity(intent)
+                })
         )
         Text(
-            text = "Minhas avaliações",
+            text = stringResource(R.string.label_minhas_avaliacoes),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center

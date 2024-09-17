@@ -404,7 +404,11 @@ fun BottomNavigationBar() {
             },
             label = { Text(stringResource(R.string.barra_navegacao_avaliacoes)) },
             selected = selectedIndex == 2,
-            onClick = { selectedIndex = 2 }
+            onClick = {
+                selectedIndex = 2
+                val intent = Intent(context, AvaliacaoActivity::class.java)
+                context.startActivity(intent)
+            }
         )
     }
 }

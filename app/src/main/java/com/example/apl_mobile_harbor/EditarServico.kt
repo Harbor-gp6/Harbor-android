@@ -30,7 +30,6 @@ class EditarServico : ComponentActivity() {
             setContent {
                 MaterialTheme {
                     EditarServicoScreen()
-                    BottomNavigationBar()
                 }
             }
         }

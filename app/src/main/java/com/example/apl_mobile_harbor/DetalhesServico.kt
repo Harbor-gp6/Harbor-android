@@ -31,7 +31,6 @@ class DetalhesServico : ComponentActivity() {
         setContent {
             MaterialTheme {
                 ServiceDetailScreen()
-                BottomNavigationBar()
             }
         }
     }
@@ -151,7 +150,8 @@ fun ActionButton(icon: Int, text: String, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .background(Color.White, shape = RoundedCornerShape(8.dp))
-            .size(width = 100.dp, height = 100.dp),
+            .size(width = 100.dp, height = 100.dp)
+            .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

@@ -52,4 +52,5 @@
     <string name="botao_salvar">Salvar</string>
     <string name="label_detalhes_cliente">Detalhes do cliente</string>
     <string name="label_meus_servicos">Meus serviços</string>
+    <string name="label_minhas_avaliacoes">Minhas avaliações</string>
 </resources>
