@@ -33,4 +33,5 @@
     <string name="sair">Sair</string>
     <string name="title_activity_detalhes_servico">DetalhesServico</string>
     <string name="title_activity_editar_servico">EditarServico</string>
+    <string name="title_activity_avaliacao">AvaliacaoActivity</string>
 </resources>

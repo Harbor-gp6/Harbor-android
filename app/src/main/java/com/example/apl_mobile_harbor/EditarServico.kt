@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -129,18 +130,32 @@ fun EditarServicoScreen() {
         ) {
             Button(
                 onClick = {  },
-                modifier = Modifier.weight(1f)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF554D4D),
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .weight(1f)
             ) {
-                Text(text = "Cancelar", color = Color.White)
+                Text(
+                    text = "Cancelar",
+                    fontSize = 20.sp)
             }
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Button(
                 onClick = {  },
-                modifier = Modifier.weight(1f)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF0E28AC),
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .weight(1f)
             ) {
-                Text(text = "Salvar", color = Color.White)
+                Text(
+                    text = "Salvar",
+                    fontSize = 20.sp)
             }
         }
 
@@ -154,10 +169,12 @@ fun CustomTextField(label: String) {
     OutlinedTextField(
         value = "",
         onValueChange = {},
+        shape = RoundedCornerShape(8.dp),
         label = { Text(text = label) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
+            .height(50.dp)
     )
 }
 
