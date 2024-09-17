@@ -1,5 +1,6 @@
 package com.example.apl_mobile_harbor
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +39,7 @@ class EditarServico : ComponentActivity() {
 
 @Composable
 fun EditarServicoScreen() {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,9 +90,30 @@ fun EditarServicoScreen() {
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ActionButton(icon = R.drawable.check, text = stringResource(R.string.dar_baixa))
-            ActionButton(icon = R.drawable.cancel, text = stringResource(R.string.cancelar))
-            ActionButton(icon = R.drawable.edit, text = stringResource(R.string.editar))
+            ActionButton(
+                icon = R.drawable.check,
+                text = stringResource(R.string.dar_baixa),
+                onClick = {
+                    val intent = Intent(context, BaixaPositivaActivity::class.java)
+                    context.startActivity(intent)
+                }
+            )
+            ActionButton(
+                icon = R.drawable.cancel,
+                text = stringResource(R.string.cancelar),
+                onClick = {
+                    val intent = Intent(context, BaixaNegativaActivity::class.java)
+                    context.startActivity(intent)
+                }
+            )
+            ActionButton(
+                icon = R.drawable.edit,
+                text = stringResource(R.string.editar),
+                onClick = {
+                    val intent = Intent(context, EditarServico::class.java)
+                    context.startActivity(intent)
+                }
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

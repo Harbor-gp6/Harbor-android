@@ -5,6 +5,7 @@
     <string name="title_activity_servicos">ServicosActivity</string>
     <string name="title_activity_baixa_negativa2">BaixaNegativaActivity2</string>
     <string name="title_activity_baixa_positiva">BaixaPositivaActivity</string>
+    <string name="title_activity_avaliacao">AvaliacaoActivity</string>
     <string name="label_email">Email</string>
     <string name="label_senha">Senha</string>
     <string name="exemplo_email">exemplo@gmail.com</string>
