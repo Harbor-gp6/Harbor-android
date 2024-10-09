@@ -169,7 +169,6 @@ fun EditarServicoScreen() {
         }
 
         Spacer(modifier = Modifier.weight(1f))
-        BottomNavigationBar()
     }
 }
 

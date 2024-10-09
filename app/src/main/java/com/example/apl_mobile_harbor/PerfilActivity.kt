@@ -23,8 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.apl_mobile_harbor.BottomNavigationBar
-import com.example.apl_mobile_harbor.R
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
 class PerfilActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +38,7 @@ class PerfilActivity : ComponentActivity() {
 }
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,11 +46,10 @@ fun ProfileScreen() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopBarPerfil()
+        TopBar("Perfil", navController )
         ProfileImageSection()
         ContactInfoSection()
         Spacer(modifier = Modifier.weight(1f))
-        BottomNavigationBar()
     }
 }
 
@@ -163,5 +162,5 @@ fun ContactItem(imageRes: Int, info: String) {
 @Preview(showSystemUi = true)
 @Composable
 fun ProfileScreenPreview() {
-    ProfileScreen()
+    ProfileScreen(navController = rememberNavController())
 }

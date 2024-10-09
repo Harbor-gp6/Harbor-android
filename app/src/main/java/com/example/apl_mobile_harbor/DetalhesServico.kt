@@ -63,8 +63,7 @@ fun ServiceDetailScreen() {
                     tint = Color.Black,
                     modifier = Modifier.size(24.dp)
                         .clickable(onClick = {
-                            val intent = Intent(context, ServicosActivity::class.java)
-                            context.startActivity(intent)
+
                         })
                 )
                 Text(
@@ -140,7 +139,7 @@ fun ServiceDetailScreen() {
             InfoRow(label = stringResource(R.string.label_cpf) + ":", info = "423.713.483-85")
         }
         Spacer(modifier = Modifier.weight(1f))
-        BottomNavigationBar()
+//        BottomNavigationBar()
     }
 }
 

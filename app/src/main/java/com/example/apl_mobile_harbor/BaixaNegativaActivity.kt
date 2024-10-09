@@ -110,7 +110,6 @@ fun DetalheBaixaNegativa() {
 @Composable
 fun BotoesLateral() {
     val context = LocalContext.current
-    val intent = Intent(context, ServicosActivity::class.java)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -118,7 +117,7 @@ fun BotoesLateral() {
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { context.startActivity(intent) },
+            onClick = {  },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF6D6767),
                 contentColor = Color.White
@@ -135,7 +134,7 @@ fun BotoesLateral() {
         }
 
         Button(
-            onClick = { context.startActivity(intent) },
+            onClick = {  },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFF44336),
                 contentColor = Color.White
