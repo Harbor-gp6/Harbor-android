@@ -1,4 +1,4 @@
-package com.example.apl_mobile_harbor
+package com.example.apl_mobile_harbor.activities.login
 
 import android.content.Context
 import android.content.Intent
@@ -39,6 +39,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.apl_mobile_harbor.activities.app.HomeActivity
+import com.example.apl_mobile_harbor.R
 import com.example.apl_mobile_harbor.ui.theme.AplmobileharborTheme
 import kotlinx.coroutines.delay
 

@@ -1,15 +1,23 @@
-package com.example.apl_mobile_harbor
+package com.example.apl_mobile_harbor.componentes
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,61 +26,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-class AgendaActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MaterialTheme {
-                AgendaScreen()
-            }
-        }
-    }
-}
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.apl_mobile_harbor.R
 
 @Composable
-fun AgendaScreen() {
+fun AgendaScreen(
+    navController: NavHostController
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF2F2F2))
     ) {
-        AgendaHeader()
+        TopBar("Agenda", navController)
         AgendaDateSelector()
         StaticCalendarRow()
         ServicoFilter()
         Servicos()
-        BottomNavigationBar()
-    }
-}
-
-@Composable
-fun AgendaHeader() {
-    val context = LocalContext.current
-    val intent = Intent(context, HomeActivity::class.java)
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.seta_esquerda),
-            contentDescription = null,
-            modifier = Modifier.size(30.dp)
-                .clickable(onClick = { context.startActivity(intent) })
-        )
-        Text(
-            text = stringResource(R.string.pagina_agenda),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.size(30.dp)) // Placeholder para alinhamento
     }
 }
 
@@ -283,10 +257,12 @@ fun ServicoFilter() {
 
 @Composable
 fun Servicos() {
-    Row(modifier = Modifier
-        .padding(16.dp),
+    Row(
+        modifier = Modifier
+            .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.CenterVertically
+    ) {
 
         Text(
             modifier = Modifier
@@ -342,11 +318,13 @@ fun Servicos() {
             )
         }
     }
-    Row(modifier = Modifier
-        .padding(16.dp)
-        .offset(y = (-30).dp),
+    Row(
+        modifier = Modifier
+            .padding(16.dp)
+            .offset(y = (-30).dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically){
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             modifier = Modifier
                 .offset(y = (-60).dp),
@@ -358,10 +336,12 @@ fun Servicos() {
 
     //Serviço 2
 
-    Row(modifier = Modifier
-        .padding(16.dp),
+    Row(
+        modifier = Modifier
+            .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.CenterVertically
+    ) {
 
         Text(
             modifier = Modifier
@@ -417,11 +397,13 @@ fun Servicos() {
             )
         }
     }
-    Row(modifier = Modifier
-        .padding(16.dp)
-        .offset(y = (-30).dp),
+    Row(
+        modifier = Modifier
+            .padding(16.dp)
+            .offset(y = (-30).dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically){
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             modifier = Modifier
                 .offset(y = (-120).dp),
@@ -432,10 +414,12 @@ fun Servicos() {
     }
     // Serviço 3
 
-    Row(modifier = Modifier
-        .padding(16.dp),
+    Row(
+        modifier = Modifier
+            .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.CenterVertically
+    ) {
 
         Text(
             modifier = Modifier
@@ -491,11 +475,13 @@ fun Servicos() {
             )
         }
     }
-    Row(modifier = Modifier
-        .padding(16.dp)
-        .offset(y = (-30).dp),
+    Row(
+        modifier = Modifier
+            .padding(16.dp)
+            .offset(y = (-30).dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically){
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             modifier = Modifier
                 .offset(y = (-170).dp),
@@ -504,11 +490,4 @@ fun Servicos() {
             color = Color.LightGray
         )
     }
-}
-
-
-@Preview(showSystemUi = true)
-@Composable
-fun AgendaPreview() {
-    AgendaScreen()
 }
