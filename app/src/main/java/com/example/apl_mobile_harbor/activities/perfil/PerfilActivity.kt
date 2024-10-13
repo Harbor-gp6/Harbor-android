@@ -1,4 +1,4 @@
-package com.example.apl_mobile_harbor
+package com.example.apl_mobile_harbor.activities.perfil
 
 import android.content.Intent
 import android.os.Bundle
@@ -25,13 +25,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.activities.app.HomeActivity
+import com.example.apl_mobile_harbor.componentes.TopBar
 
 class PerfilActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                ProfileScreen()
+                ProfileScreen(rememberNavController())
             }
         }
     }

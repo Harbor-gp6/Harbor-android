@@ -1,4 +1,4 @@
-package com.example.apl_mobile_harbor
+package com.example.apl_mobile_harbor.activities.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,6 +24,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.componentes.AgendaScreen
+import com.example.apl_mobile_harbor.componentes.AvaliacaoScreen
+import com.example.apl_mobile_harbor.componentes.DrawerContent
+import com.example.apl_mobile_harbor.componentes.Header
+import com.example.apl_mobile_harbor.componentes.HomeScreen
+import com.example.apl_mobile_harbor.componentes.PedidoScreen
 import kotlinx.coroutines.launch
 
 class HomeActivity : ComponentActivity() {
@@ -83,7 +90,7 @@ fun Navegacao(
                         }
                     }
                     composable("pedidosScreen") {
-                        ServiceScreen(navController)
+                        PedidoScreen(navController)
                     }
                     composable("avaliacoesScreen") {
                         AvaliacaoScreen(navController)
