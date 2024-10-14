@@ -1,6 +1,6 @@
 package com.example.apl_mobile_harbor.activities.login
 
-import android.content.Context
+import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,16 +39,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apl_mobile_harbor.activities.app.HomeActivity
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.modulos.appModule
 import com.example.apl_mobile_harbor.ui.theme.AplmobileharborTheme
 import kotlinx.coroutines.delay
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startKoin {
+            androidContext(this@MainActivity)
+            modules(appModule)
+        }
         enableEdgeToEdge()
         setContent {
             AplmobileharborTheme {
@@ -104,9 +118,10 @@ fun MainContent() {
 }
 
 @Composable
-fun Tela(name: String, modifier: Modifier = Modifier) {
+fun Tela(name: String, modifier: Modifier = Modifier, loginViewModel: LoginViewModel = koinViewModel()) {
     val context = LocalContext.current
     var manterConectado by remember { mutableStateOf(false) }
+    val loginResponse by loginViewModel.loginResponse.observeAsState()
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -158,7 +173,13 @@ fun Tela(name: String, modifier: Modifier = Modifier) {
         }
 
         Button(
-            onClick = { handleClick(context) },
+            onClick = {
+                if (email.isBlank() || senha.isBlank()) {
+                    loginViewModel.emailOuSenhaEmBranco = true
+                } else {
+                    loginViewModel.login(email, senha)
+                }
+                      },
             modifier = Modifier
                 .padding(top = 20.dp)
                 .width(200.dp),
@@ -170,12 +191,50 @@ fun Tela(name: String, modifier: Modifier = Modifier) {
             Text(stringResource(R.string.botao_entrar), color = Color.White) // Opcional: mudar a cor do texto para garantir contraste
         }
     }
+    loginResponse?.let { response ->
+        LaunchedEffect(response) {
+            context.startActivity(Intent(context, HomeActivity::class.java))
+        }
+    }
+    ModalErro(loginViewModel)
 }
 
-fun handleClick(context: Context) {
-    val intent = Intent(context, HomeActivity::class.java)
-    context.startActivity(intent)
+@Composable
+fun ModalErro(loginViewModel: LoginViewModel = viewModel()) {
+    var texto: String = ""
+    if (loginViewModel.emailOuSenhaEmBranco) {
+        texto = "⚠\uFE0F Email ou senha inválidos"
+    }
+    if (loginViewModel.erroApi) {
+        texto = "⚠\uFE0F Ops! Alguma coisa deu errado. \r\nTente novamente"
+    }
+    if (loginViewModel.emailOuSenhaEmBranco || loginViewModel.erroApi) {
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .background(Color(228, 3, 80, 210))
+                .zIndex(1f)
+        ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = texto,
+                    color = Color.Yellow,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                )
+            }
+        }
+        LaunchedEffect("alerta-topo") {
+            delay(5000)
+            loginViewModel.erroApi = false
+            loginViewModel.emailOuSenhaEmBranco = false
+        }
+    }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

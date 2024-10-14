@@ -1,6 +1,5 @@
 package com.example.apl_mobile_harbor.componentes
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,9 +30,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.apl_mobile_harbor.BaixaNegativaActivity
-import com.example.apl_mobile_harbor.BaixaPositivaActivity
-import com.example.apl_mobile_harbor.DetalhesServico
 import com.example.apl_mobile_harbor.R
 
 @Composable
@@ -100,8 +96,7 @@ fun ContactItem(
             .padding(16.dp)
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = {
-                val intent = Intent(context, DetalhesServico::class.java)
-                context.startActivity(intent)
+
             })
     ) {
         Row(
@@ -135,8 +130,6 @@ fun ContactItem(
                 .align(Alignment.TopEnd)
         ) {
             IconButton(onClick = {
-                val intent = Intent(context, BaixaPositivaActivity::class.java)
-                context.startActivity(intent)
             }) {
                 Image(
                     painter = painterResource(id = R.drawable.aceitar),
@@ -147,8 +140,7 @@ fun ContactItem(
                 )
             }
             IconButton(onClick = {
-                val intent = Intent(context, BaixaNegativaActivity::class.java)
-                context.startActivity(intent)
+
             }) {
                 Image(
                     painter = painterResource(id = R.drawable.cancelar),

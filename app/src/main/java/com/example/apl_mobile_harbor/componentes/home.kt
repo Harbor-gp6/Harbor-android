@@ -41,7 +41,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.apl_mobile_harbor.AgendaActivity
 import com.example.apl_mobile_harbor.activities.perfil.PerfilActivity
 import com.example.apl_mobile_harbor.R
 
@@ -78,8 +77,6 @@ fun MenuGrid() {
                 weigthLeft = 0.6f,
                 weigthRight = 0.4f,
                 handleClick = {
-                    val intent = Intent(context, AgendaActivity::class.java)
-                    context.startActivity(intent)
                 }
             )
             MenuCard(title = R.string.card_perfil, R.drawable.finance_mode, Modifier.weight(1f),

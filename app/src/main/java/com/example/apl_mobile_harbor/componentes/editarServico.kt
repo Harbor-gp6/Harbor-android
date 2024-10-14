@@ -29,9 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.apl_mobile_harbor.BaixaNegativaActivity
-import com.example.apl_mobile_harbor.BaixaPositivaActivity
-import com.example.apl_mobile_harbor.EditarServico
 import com.example.apl_mobile_harbor.R
 
 @Composable
@@ -91,16 +88,12 @@ fun EditarServicoScreen() {
                 icon = R.drawable.check,
                 text = stringResource(R.string.dar_baixa),
                 onClick = {
-                    val intent = Intent(context, BaixaPositivaActivity::class.java)
-                    context.startActivity(intent)
                 }
             )
             ActionButton(
                 icon = R.drawable.cancel,
                 text = stringResource(R.string.cancelar),
                 onClick = {
-                    val intent = Intent(context, BaixaNegativaActivity::class.java)
-                    context.startActivity(intent)
                 }
             )
             ActionButton(
