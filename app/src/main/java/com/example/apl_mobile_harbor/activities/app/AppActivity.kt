@@ -33,7 +33,7 @@ import com.example.apl_mobile_harbor.componentes.HomeScreen
 import com.example.apl_mobile_harbor.componentes.PedidoScreen
 import kotlinx.coroutines.launch
 
-class HomeActivity : ComponentActivity() {
+class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -48,8 +48,6 @@ class HomeActivity : ComponentActivity() {
 fun Navegacao(
     navController: NavHostController
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.weight(1f)) {
@@ -58,36 +56,7 @@ fun Navegacao(
                     startDestination = "homeScreen"
                 ) {
                     composable("homeScreen") {
-                        ModalNavigationDrawer(
-                            drawerState = drawerState,
-                            drawerContent = {
-                                DrawerContent(modifier = Modifier
-                                    .fillMaxHeight()
-                                    .clip(RoundedCornerShape(topEnd = 30.dp, bottomEnd = 30.dp))
-                                    .width(300.dp),
-                                    navController
-                                )
-                            }
-                        ) {
-                            Scaffold(
-                                topBar = {
-                                    Header(
-                                        onMenuClick = { scope.launch { drawerState.open() } },
-                                        message = stringResource(R.string.saudacao, "Tiago"),
-                                        isHomeActivity = true
-                                    )
-                                }
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(Color.White)
-                                        .padding(it)
-                                ) {
-                                    HomeScreen()
-                                }
-                            }
-                        }
+                        HomeScreen(navController, "Geraldo")
                     }
                     composable("pedidosScreen") {
                         PedidoScreen(navController)

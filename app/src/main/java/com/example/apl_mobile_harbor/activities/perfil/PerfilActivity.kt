@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.apl_mobile_harbor.R
-import com.example.apl_mobile_harbor.activities.app.HomeActivity
+import com.example.apl_mobile_harbor.activities.app.AppActivity
 import com.example.apl_mobile_harbor.componentes.TopBar
 
 class PerfilActivity : ComponentActivity() {
@@ -59,7 +59,7 @@ fun ProfileScreen(navController: NavHostController) {
 @Composable
 fun TopBarPerfil() {
     val context = LocalContext.current
-    val intent = Intent(context, HomeActivity::class.java)
+    val intent = Intent(context, AppActivity::class.java)
     Row(
         modifier = Modifier
             .fillMaxWidth()

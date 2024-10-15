@@ -45,8 +45,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.apl_mobile_harbor.activities.app.HomeActivity
+import com.example.apl_mobile_harbor.activities.app.AppActivity
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.classes.auth.TokenProvider
 import com.example.apl_mobile_harbor.modulos.appModule
 import com.example.apl_mobile_harbor.ui.theme.AplmobileharborTheme
 import kotlinx.coroutines.delay
@@ -54,11 +55,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.context.startKoin
 
-class MainActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startKoin {
-            androidContext(this@MainActivity)
+            androidContext(this@LoginActivity)
             modules(appModule)
         }
         enableEdgeToEdge()
@@ -178,6 +179,10 @@ fun Tela(name: String, modifier: Modifier = Modifier, loginViewModel: LoginViewM
                     loginViewModel.emailOuSenhaEmBranco = true
                 } else {
                     loginViewModel.login(email, senha)
+                    if (TokenProvider.token != null) {
+                        val intent = Intent(context, AppActivity::class.java)
+                        context.startActivity(intent)
+                    }
                 }
                       },
             modifier = Modifier
@@ -193,7 +198,7 @@ fun Tela(name: String, modifier: Modifier = Modifier, loginViewModel: LoginViewM
     }
     loginResponse?.let { response ->
         LaunchedEffect(response) {
-            context.startActivity(Intent(context, HomeActivity::class.java))
+            context.startActivity(Intent(context, AppActivity::class.java))
         }
     }
     ModalErro(loginViewModel)
