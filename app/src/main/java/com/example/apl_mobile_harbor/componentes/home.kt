@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,14 +22,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,29 +46,53 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.apl_mobile_harbor.AgendaActivity
 import com.example.apl_mobile_harbor.activities.perfil.PerfilActivity
 import com.example.apl_mobile_harbor.R
+import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen() {
-    Scaffold {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(it)
-        ) {
-            MenuGrid()
-            RecentActivities()
-            Spacer(modifier = Modifier.weight(1f))
+fun HomeScreen(navController: NavHostController, user: String) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            DrawerContent(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(topEnd = 30.dp, bottomEnd = 30.dp))
+                    .width(300.dp),
+                navController = navController
+            )
         }
+    ) {
+        Scaffold(
+            topBar = {
+                Header(
+                    onMenuClick = { scope.launch { drawerState.open() } },
+                    message = stringResource(R.string.saudacao, user),
+                    isHomeActivity = true
+                )
+            },
+            content = { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                        .padding(paddingValues)
+                ) {
+                    MenuGrid(navController = navController)
+                    RecentActivities()
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        )
     }
 }
 
-
 @Composable
-fun MenuGrid() {
+fun MenuGrid(navController: NavHostController) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -74,15 +103,19 @@ fun MenuGrid() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MenuCard(
-                R.string.card_agenda, R.drawable.calendar_month, Modifier.weight(1f),
+                title = R.string.card_agenda,
+                iconRes = R.drawable.calendar_month,
+                modifier = Modifier.weight(1f),
                 weigthLeft = 0.6f,
                 weigthRight = 0.4f,
                 handleClick = {
-                    val intent = Intent(context, AgendaActivity::class.java)
-                    context.startActivity(intent)
+                    navController.navigate("agendaScreen") // Navegação correta
                 }
             )
-            MenuCard(title = R.string.card_perfil, R.drawable.finance_mode, Modifier.weight(1f),
+            MenuCard(
+                title = R.string.card_perfil,
+                iconRes = R.drawable.finance_mode,
+                modifier = Modifier.weight(1f),
                 weigthLeft = 0.6f,
                 weigthRight = 0.4f,
                 handleClick = {
@@ -96,10 +129,13 @@ fun MenuGrid() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             MenuCard(
-                R.string.card_servicos, R.drawable.person_add, Modifier.weight(1f),
+                title = R.string.card_servicos,
+                iconRes = R.drawable.person_add,
+                modifier = Modifier.weight(1f),
                 weigthLeft = 0.8f,
                 weigthRight = 0.2f,
                 handleClick = {
+                    navController.navigate("servicosScreen") // Navegação correta
                 }
             )
         }
@@ -122,8 +158,7 @@ fun MenuCard(
             .clickable(onClick = handleClick),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF0E28AC)
-        ),
-        onClick = handleClick
+        )
     ) {
         Column(
             modifier = Modifier
@@ -174,11 +209,10 @@ fun MenuCard(
     }
 }
 
-
 @Composable
 fun RecentActivities() {
     val activities = remember { mutableStateListOf<String>() }
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
@@ -218,11 +252,17 @@ fun ActivityItem() {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text(text = stringResource(R.string.pedido_agendado_usuario, "Marcos"), color = Color.Black, fontWeight = FontWeight.Bold)
-                Text(text = stringResource(
-                    R.string.data_hora_pedido,
-                    "Corte de cabelo",
-                    "hoje", "17:00"),
+                Text(
+                    text = stringResource(R.string.pedido_agendado_usuario, "Marcos"),
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = stringResource(
+                        R.string.data_hora_pedido,
+                        "Corte de cabelo",
+                        "hoje", "17:00"
+                    ),
                     color = Color.Black
                 )
             }
@@ -237,37 +277,42 @@ fun DrawerContent(modifier: Modifier = Modifier, navController: NavHostControlle
             .background(Color(0xFFD9D9D9))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
-    )
-    {
+    ) {
         MenuItems(
-            R.drawable.calendar_month, R.string.pagina_agenda,
-            navController.navigate("agendaScreen")
+            R.drawable.calendar_month,
+            R.string.pagina_agenda,
+            onClick = { navController.navigate("agendaScreen") }
         )
         MenuItems(
-            R.drawable.account_circle, R.string.menu_lateral_perfil,
-            navController.navigate("agendaScreen")
+            R.drawable.account_circle,
+            R.string.menu_lateral_perfil,
+            onClick = { navController.navigate("perfilScreen") }
         )
         MenuItems(
-            R.drawable.content_cut, R.string.card_servicos,
-            navController.navigate("agendaScreen")
+            R.drawable.content_cut,
+            R.string.card_servicos,
+            onClick = { navController.navigate("servicosScreen") }
         )
         MenuItems(
-            R.drawable.orders, R.string.todos_os_pedidos,
-            navController.navigate("agendaScreen")
+            R.drawable.orders,
+            R.string.todos_os_pedidos,
+            onClick = { navController.navigate("pedidosScreen") }
         )
         MenuItems(
-            R.drawable.star, R.string.barra_navegacao_avaliacoes,
-            navController.navigate("agendaScreen")
+            R.drawable.star,
+            R.string.barra_navegacao_avaliacoes,
+            onClick = { navController.navigate("avaliacoesScreen") }
         )
         MenuItems(
-            R.drawable.move_item, R.string.sair,
-            navController.navigate("agendaScreen")
+            R.drawable.move_item,
+            R.string.sair,
+            onClick = { navController.navigate("sairScreen") }
         )
     }
 }
 
 @Composable
-fun MenuItems(icon: Int, page: Int, navigation: Unit) {
+fun MenuItems(icon: Int, page: Int, onClick: () -> Unit) {
     var color by remember { mutableStateOf(Color.Black) }
     if (icon == R.drawable.move_item) {
         color = Color.Red
@@ -275,23 +320,22 @@ fun MenuItems(icon: Int, page: Int, navigation: Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = { navigation })
+            .clickable(onClick = onClick)
     ) {
         Row(
             modifier = Modifier
                 .background(Color(0xFFD9D9D9))
-                .padding(16.dp)  // Padding interno do Row
-                .fillMaxWidth(),  // Garante que o Row preencha a largura disponível
-            verticalAlignment = Alignment.CenterVertically,  // Alinha verticalmente
-            horizontalArrangement = Arrangement.Start  // Alinha horizontalmente
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
                 tint = color,
-                modifier = Modifier.size(24.dp)  // Define o tamanho do ícone
+                modifier = Modifier.size(24.dp)
             )
-            Spacer(modifier = Modifier.width(16.dp))  // Espaço entre ícone e texto
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = stringResource(id = page),
                 fontSize = 20.sp,
