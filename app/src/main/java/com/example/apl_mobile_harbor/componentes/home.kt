@@ -1,5 +1,6 @@
 package com.example.apl_mobile_harbor.componentes
 
+import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,10 +49,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.apl_mobile_harbor.activities.perfil.PerfilActivity
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeScreen(navController: NavHostController, user: String) {
+fun HomeScreen(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -71,7 +74,7 @@ fun HomeScreen(navController: NavHostController, user: String) {
             topBar = {
                 Header(
                     onMenuClick = { scope.launch { drawerState.open() } },
-                    message = stringResource(R.string.saudacao, user),
+                    message = stringResource(R.string.saudacao, "jonas"),
                     isHomeActivity = true
                 )
             },
@@ -106,21 +109,10 @@ fun MenuGrid(navController: NavHostController) {
                 title = R.string.card_agenda,
                 iconRes = R.drawable.calendar_month,
                 modifier = Modifier.weight(1f),
-                weigthLeft = 0.6f,
-                weigthRight = 0.4f,
+                weigthLeft = 0.8f,
+                weigthRight = 0.2f,
                 handleClick = {
                     navController.navigate("agendaScreen") // Navegação correta
-                }
-            )
-            MenuCard(
-                title = R.string.card_perfil,
-                iconRes = R.drawable.finance_mode,
-                modifier = Modifier.weight(1f),
-                weigthLeft = 0.6f,
-                weigthRight = 0.4f,
-                handleClick = {
-                    val intent = Intent(context, PerfilActivity::class.java)
-                    context.startActivity(intent)
                 }
             )
         }
@@ -130,15 +122,27 @@ fun MenuGrid(navController: NavHostController) {
         ) {
             MenuCard(
                 title = R.string.card_servicos,
-                iconRes = R.drawable.person_add,
+                iconRes = R.drawable.pedidos,
                 modifier = Modifier.weight(1f),
-                weigthLeft = 0.8f,
-                weigthRight = 0.2f,
+                weigthLeft = 0.6f,
+                weigthRight = 0.4f,
                 handleClick = {
-                    navController.navigate("servicosScreen") // Navegação correta
+                    navController.navigate("pedidosScreen")
+                }
+            )
+            MenuCard(
+                title = R.string.card_perfil,
+                iconRes = R.drawable.person,
+                modifier = Modifier.weight(1f),
+                weigthLeft = 0.6f,
+                weigthRight = 0.4f,
+                handleClick = {
+                    val intent = Intent(context, PerfilActivity::class.java)
+                    context.startActivity(intent)
                 }
             )
         }
+
     }
 }
 
@@ -271,7 +275,12 @@ fun ActivityItem() {
 }
 
 @Composable
-fun DrawerContent(modifier: Modifier = Modifier, navController: NavHostController) {
+fun DrawerContent(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    loginViewModel: LoginViewModel = koinViewModel()
+) {
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .background(Color(0xFFD9D9D9))
@@ -279,14 +288,17 @@ fun DrawerContent(modifier: Modifier = Modifier, navController: NavHostControlle
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MenuItems(
-            R.drawable.calendar_month,
+            R.drawable.calendar_drawer,
             R.string.pagina_agenda,
             onClick = { navController.navigate("agendaScreen") }
         )
         MenuItems(
             R.drawable.account_circle,
             R.string.menu_lateral_perfil,
-            onClick = { navController.navigate("perfilScreen") }
+            onClick = {
+                val intent = Intent(context, PerfilActivity::class.java)
+                context.startActivity(intent)
+            }
         )
         MenuItems(
             R.drawable.content_cut,
@@ -306,7 +318,11 @@ fun DrawerContent(modifier: Modifier = Modifier, navController: NavHostControlle
         MenuItems(
             R.drawable.move_item,
             R.string.sair,
-            onClick = { navController.navigate("sairScreen") }
+            onClick = {
+                loginViewModel.logout()
+                val activity = (context as? Activity)
+                activity?.finish()
+            }
         )
     }
 }

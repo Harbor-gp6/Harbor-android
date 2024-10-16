@@ -2,19 +2,27 @@ package com.example.apl_mobile_harbor.classes.auth
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.apl_mobile_harbor.interfaces.ApiHarbor
 
 class TokenManager(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
     fun saveToken(token: String, manterConectado: Boolean) {
+        val editor = prefs.edit()
         TokenProvider.token = token
+        editor.putBoolean("manterConectado", manterConectado)
         if (manterConectado) {
-            prefs.edit().putString("auth_token", token).apply()
+            editor.putString("token", token)
         }
+        editor.apply()
     }
 
     fun getTokenFromPrefs(): String? {
-        return prefs.getString("auth_token", null)
+        return prefs.getString("token", null)
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return prefs.getBoolean("manterConectado", false) && getTokenFromPrefs() != null
     }
 
     fun getToken(): String? {
@@ -22,7 +30,10 @@ class TokenManager(context: Context) {
     }
 
     fun clearToken() {
-        prefs.edit().remove("auth_token").apply()
+        val editor = prefs.edit()
+        editor.remove("token")
+        editor.remove("manterConectado")
+        editor.apply()
         TokenProvider.token = null
     }
 }
