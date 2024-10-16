@@ -15,7 +15,7 @@
     <string name="saudacao">Bem-vindo(a)\n%1$s</string>
     <string name="card_perfil">Meu\nperfil</string>
     <string name="menu_lateral_perfil">Meu perfil</string>
-    <string name="card_servicos">Meus serviços</string>
+    <string name="card_servicos">Meus pedidos</string>
     <string name="manter_conectado">Manter conectado</string>
     <string name="card_agenda">Agenda</string>
     <string name="atividade_recente">Atividade recente</string>

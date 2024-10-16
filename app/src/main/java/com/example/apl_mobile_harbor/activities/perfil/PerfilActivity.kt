@@ -49,38 +49,10 @@ fun ProfileScreen(navController: NavHostController) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopBar("Perfil", navController )
+        TopBar("Perfil", navController, true)
         ProfileImageSection()
         ContactInfoSection()
         Spacer(modifier = Modifier.weight(1f))
-    }
-}
-
-@Composable
-fun TopBarPerfil() {
-    val context = LocalContext.current
-    val intent = Intent(context, AppActivity::class.java)
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.seta_esquerda),
-            contentDescription = "Back",
-            tint = Color.Black,
-            modifier = Modifier.size(24.dp)
-                .clickable(onClick = { context.startActivity(intent) })
-        )
-        Text(
-            text = "Meu perfil",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.size(24.dp))
     }
 }
 

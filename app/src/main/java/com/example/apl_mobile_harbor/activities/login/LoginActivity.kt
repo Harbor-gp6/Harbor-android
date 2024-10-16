@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +50,7 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apl_mobile_harbor.activities.app.AppActivity
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.classes.auth.TokenManager
 import com.example.apl_mobile_harbor.classes.auth.TokenProvider
 import com.example.apl_mobile_harbor.modulos.appModule
 import com.example.apl_mobile_harbor.ui.theme.AplmobileharborTheme
@@ -56,11 +60,21 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.context.startKoin
 
 class LoginActivity : ComponentActivity() {
+    private lateinit var tokenManager: TokenManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startKoin {
             androidContext(this@LoginActivity)
             modules(appModule)
+        }
+
+        tokenManager = TokenManager(this)
+
+        if (tokenManager.isUserLoggedIn()) {
+            val intent = Intent(this, AppActivity::class.java)
+            startActivity(intent)
+            return
         }
         enableEdgeToEdge()
         setContent {
@@ -112,17 +126,16 @@ fun MainContent() {
             .background(Color(0xFFF2F2F2))
     ) { innerPadding ->
         Tela(
-            name = "Android",
             modifier = Modifier.padding(innerPadding)
         )
     }
 }
 
 @Composable
-fun Tela(name: String, modifier: Modifier = Modifier, loginViewModel: LoginViewModel = koinViewModel()) {
+fun Tela(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = koinViewModel()) {
     val context = LocalContext.current
-    var manterConectado by remember { mutableStateOf(false) }
     val loginResponse by loginViewModel.loginResponse.observeAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -136,20 +149,20 @@ fun Tela(name: String, modifier: Modifier = Modifier, loginViewModel: LoginViewM
         )
         Spacer(modifier = Modifier.size(40.dp))
 
-        var email by remember { mutableStateOf("") }
+
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
+            value = loginViewModel.email,
+            onValueChange = { loginViewModel.email = it },
             label = { Text(stringResource(R.string.label_email)) },
             placeholder = { Text(stringResource(R.string.exemplo_email)) }
         )
 
         Spacer(modifier = Modifier.size(20.dp))
 
-        var senha by remember { mutableStateOf("") }
         OutlinedTextField(
-            value = senha,
-            onValueChange = { senha = it },
+            value = loginViewModel.senha,
+            visualTransformation = PasswordVisualTransformation(),
+            onValueChange = { loginViewModel.senha = it },
             label = { Text(stringResource(R.string.label_senha)) },
             supportingText = {
                 Text(
@@ -166,8 +179,8 @@ fun Tela(name: String, modifier: Modifier = Modifier, loginViewModel: LoginViewM
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = manterConectado,
-                    onCheckedChange = { manterConectado = it }
+                    checked = loginViewModel.manterConectado,
+                    onCheckedChange = { loginViewModel.manterConectado = it }
                 )
                 Text(stringResource(R.string.manter_conectado))
             }
@@ -175,25 +188,41 @@ fun Tela(name: String, modifier: Modifier = Modifier, loginViewModel: LoginViewM
 
         Button(
             onClick = {
-                if (email.isBlank() || senha.isBlank()) {
-                    loginViewModel.emailOuSenhaEmBranco = true
-                } else {
-                    loginViewModel.login(email, senha)
-                    if (TokenProvider.token != null) {
-                        val intent = Intent(context, AppActivity::class.java)
-                        context.startActivity(intent)
-                    }
+                loginViewModel.login()
+                if (TokenProvider.token != null) {
+                    val intent = Intent(context, AppActivity::class.java)
+                    context.startActivity(intent)
                 }
-                      },
+            },
+            enabled = !loginViewModel.isEmAndamento,
             modifier = Modifier
                 .padding(top = 20.dp)
-                .width(200.dp),
+                .width(200.dp)
+                .height(50.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF0E28AC) // Use containerColor para a cor de fundo
+                containerColor = Color(0xFF0E28AC)
             ),
             shape = RoundedCornerShape(50)
         ) {
-            Text(stringResource(R.string.botao_entrar), color = Color.White) // Opcional: mudar a cor do texto para garantir contraste
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                if (!loginViewModel.isEmAndamento) {
+                    Text(
+                        text = stringResource(R.string.botao_entrar),
+                        color = Color.White
+                    )
+                } else {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(24.dp),
+                        strokeWidth = 2.dp,
+                        color = Color(0xFF0E28AC)
+                    )
+                }
+            }
         }
     }
     loginResponse?.let { response ->

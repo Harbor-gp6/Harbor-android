@@ -1,5 +1,6 @@
 package com.example.apl_mobile_harbor.componentes
 
+import android.app.Activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,9 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.activities.perfil.PerfilActivity
 
 @Composable
-fun TopBar(title: String, navController: NavController) {
+fun TopBar(title: String, navController: NavController, isPerfilActivity: Boolean? = null) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
@@ -37,7 +39,14 @@ fun TopBar(title: String, navController: NavController) {
             contentDescription = "Back",
             tint = Color.Black,
             modifier = Modifier.size(24.dp)
-                .clickable(onClick = { navController.popBackStack() })
+                .clickable(onClick = {
+                    if (isPerfilActivity == true) {
+                        val activity = (context as? Activity)
+                        activity?.finish()
+                    } else {
+                        navController.popBackStack()
+                    }
+                })
         )
         Text(
             text = title,
