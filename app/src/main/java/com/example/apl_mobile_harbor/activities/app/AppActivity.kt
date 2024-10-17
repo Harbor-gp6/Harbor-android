@@ -1,5 +1,6 @@
 package com.example.apl_mobile_harbor.activities.app
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,10 +29,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.activities.login.LoginActivity
 import com.example.apl_mobile_harbor.componentes.AgendaScreen
 import com.example.apl_mobile_harbor.componentes.AvaliacaoScreen
 import com.example.apl_mobile_harbor.componentes.HomeScreen
 import com.example.apl_mobile_harbor.componentes.PedidoScreen
+import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
+import org.koin.androidx.compose.koinViewModel
 
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,6 +136,7 @@ fun BottomNavigationBar(
         )
     }
 }
+
 
 @Preview(showSystemUi = true)
 @Composable

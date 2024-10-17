@@ -52,28 +52,24 @@ fun PedidoScreen(
 fun ServiceInfo() {
     Column(modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
         ContactItem(
-            imageRes = R.drawable.user,
             name = "Alex Batista",
             time = "10:30 - 11:00",
             service = "Corte de cabelo"
         )
         Spacer(modifier = Modifier.height(15.dp))
         ContactItem(
-            imageRes = R.drawable.user,
             name = "José Alves",
             time = "11:00 - 11:30",
             service = "Barba"
         )
         Spacer(modifier = Modifier.height(15.dp))
         ContactItem(
-            imageRes = R.drawable.user,
             name = "Ben Mendes",
             time = "11:30 - 12:00",
             service = "Corte de cabelo"
         )
         Spacer(modifier = Modifier.height(15.dp))
         ContactItem(
-            imageRes = R.drawable.user,
             name = "Hugo Pontes",
             time = "12:00 - 12:30",
             service = "Corte de cabelo"
@@ -83,7 +79,6 @@ fun ServiceInfo() {
 
 @Composable
 fun ContactItem(
-    imageRes: Int,
     name: String,
     time: String,
     service: String
@@ -93,7 +88,7 @@ fun ContactItem(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White, shape = RoundedCornerShape(8.dp))
-            .padding(16.dp)
+            .padding(8.dp)
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = {
 
@@ -105,15 +100,7 @@ fun ContactItem(
                 .padding(vertical = 8.dp),
             verticalAlignment = Alignment.Top
         ) {
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-            )
             Spacer(modifier = Modifier.width(16.dp))
-
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier
@@ -129,27 +116,7 @@ fun ContactItem(
             modifier = Modifier
                 .align(Alignment.TopEnd)
         ) {
-            IconButton(onClick = {
-            }) {
-                Image(
-                    painter = painterResource(id = R.drawable.aceitar),
-                    contentDescription = "Confirmar",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                )
-            }
-            IconButton(onClick = {
 
-            }) {
-                Image(
-                    painter = painterResource(id = R.drawable.cancelar),
-                    contentDescription = "Negar",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                )
-            }
         }
     }
 }

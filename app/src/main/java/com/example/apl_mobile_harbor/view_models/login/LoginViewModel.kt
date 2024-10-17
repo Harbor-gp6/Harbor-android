@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
 import com.example.apl_mobile_harbor.classes.auth.TokenProvider
+import com.example.apl_mobile_harbor.classes.auth.Usuario
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor.LoginResponse
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor.LoginRequest
@@ -46,6 +47,8 @@ class LoginViewModel(private val loginApi: ApiHarbor, private val tokenManager: 
                         _loginResponse.value = response.body()
                         _loginResponse.value?.let {
                             tokenManager.saveToken(it.token, manterConectado)
+                            val usuario = Usuario(it.userId, it.nome, it.email, it.idEmpresa)
+                            tokenManager.saveUsuario(usuario)
                         }
                     } else {
                         _error.value = "Login failed: ${response.errorBody()?.string()}"
