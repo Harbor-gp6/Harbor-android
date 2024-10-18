@@ -49,12 +49,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.apl_mobile_harbor.activities.perfil.PerfilActivity
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.activities.app.AppActivity
+import com.example.apl_mobile_harbor.activities.login.LoginActivity
+import com.example.apl_mobile_harbor.classes.auth.TokenManager
 import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
+    val tokenManager = TokenManager(LocalContext.current)
+    val usuario = tokenManager.getUsuario()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -72,11 +77,14 @@ fun HomeScreen(navController: NavHostController) {
     ) {
         Scaffold(
             topBar = {
-                Header(
-                    onMenuClick = { scope.launch { drawerState.open() } },
-                    message = stringResource(R.string.saudacao, "jonas"),
-                    isHomeActivity = true
-                )
+                if (usuario != null) {
+                    Header(
+                        onMenuClick = { scope.launch { drawerState.open() } },
+                        message = stringResource(R.string.saudacao, usuario.nome),
+                        isHomeActivity = true
+                    )
+                }
+
             },
             content = { paddingValues ->
                 Column(
@@ -303,11 +311,6 @@ fun DrawerContent(
         MenuItems(
             R.drawable.content_cut,
             R.string.card_servicos,
-            onClick = { navController.navigate("servicosScreen") }
-        )
-        MenuItems(
-            R.drawable.orders,
-            R.string.todos_os_pedidos,
             onClick = { navController.navigate("pedidosScreen") }
         )
         MenuItems(
@@ -320,8 +323,9 @@ fun DrawerContent(
             R.string.sair,
             onClick = {
                 loginViewModel.logout()
-                val activity = (context as? Activity)
-                activity?.finish()
+                val intent = Intent(context, LoginActivity::class.java)
+                context.startActivity(intent)
+                (context as? Activity)?.finish()
             }
         )
     }

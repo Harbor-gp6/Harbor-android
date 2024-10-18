@@ -72,6 +72,7 @@ class LoginActivity : ComponentActivity() {
         tokenManager = TokenManager(this)
 
         if (tokenManager.isUserLoggedIn()) {
+            TokenProvider.token = tokenManager.getTokenFromPrefs()
             val intent = Intent(this, AppActivity::class.java)
             startActivity(intent)
             return
