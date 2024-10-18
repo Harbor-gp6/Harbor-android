@@ -5,6 +5,7 @@ import com.example.apl_mobile_harbor.classes.auth.AuthInterceptor
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
 import com.example.apl_mobile_harbor.classes.auth.TokenProvider
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor
+import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
 import okhttp3.OkHttpClient
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -43,4 +44,6 @@ val appModule = module {
 
     // ViewModel LoginViewModel com injeção de ApiHarbor e TokenManager
     viewModel { LoginViewModel(get(), get()) }
+
+    viewModel { PedidosViewModel(get(), get()) }
 }
