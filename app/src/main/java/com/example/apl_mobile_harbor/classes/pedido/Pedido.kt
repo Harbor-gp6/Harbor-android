@@ -1,7 +1,11 @@
 package com.example.apl_mobile_harbor.classes.pedido
 
+import android.util.Log
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 data class Pedido(
     val idPedido: Int,
@@ -30,6 +34,26 @@ data class PedidoProduto(
     val nomeProduto: String,
     val quantidade: Int
 )
+
+fun convertToDate(date: String): LocalDateTime? {
+    // Use o formato correto de acordo com as strings que você espera
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+    return try {
+        val dataFormatada = LocalDateTime.parse(date, formatter)
+        dataFormatada
+    } catch (e: Exception) {
+        Log.e("string", "Erro ao converter", e)
+        null
+    }
+
+}
+
+fun formatDateOnly(date: String): String {
+    // Aqui você pode aplicar a lógica para formatar a data como "dd/MM/yyyy" ou outro formato desejado
+    val parsedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
+    return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(parsedDate ?: Date())
+}
 
 fun formatDate(date1: String, date2: String): String {
     // Use o formato correto de acordo com as strings que você espera

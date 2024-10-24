@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
 import com.example.apl_mobile_harbor.classes.pedido.Pedido
+import com.example.apl_mobile_harbor.classes.pedido.convertToDate
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,7 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
                     val retorno = apiHarbor.getPedidos()
                     if (retorno.isSuccessful) {
                         pedidos.clear()
-                        pedidos.addAll(retorno.body() ?: emptyList())
+                        pedidos.addAll(retorno.body()?.sortedBy { convertToDate(it.dataAgendamento) } ?: emptyList())
                     } else {
                         Log.i("erro", "Erro")
                     }

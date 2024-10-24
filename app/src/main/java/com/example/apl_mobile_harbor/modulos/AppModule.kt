@@ -33,7 +33,7 @@ val appModule = module {
     // Configuração do Retrofit com o baseUrl e GsonConverterFactory
     single {
         Retrofit.Builder()
-            .baseUrl("http://192.168.0.109:8080/") // Altere para a URL da sua API
+            .baseUrl("http://192.168.0.108:8080/") // Altere para a URL da sua API
             .client(get<OkHttpClient>()) // Adiciona o OkHttpClient configurado
             .addConverterFactory(GsonConverterFactory.create()) // Converter JSON
             .build()

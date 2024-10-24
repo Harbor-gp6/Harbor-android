@@ -34,7 +34,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.classes.pedido.convertToDate
 import com.example.apl_mobile_harbor.classes.pedido.formatDate
+import com.example.apl_mobile_harbor.classes.pedido.formatDateOnly
 import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.text.NumberFormat
@@ -60,17 +62,42 @@ fun PedidoScreen(
 
 @Composable
 fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
+    // Atualiza a lista de pedidos no ViewModel
     pedidosViewModel.atualizarListaDePedidos()
+
+    // Agrupa os pedidos por data e ordena as datas
+    val pedidosAgrupados = pedidosViewModel.pedidos.groupBy { it.pedidoPrestador[0].dataInicio }
+    val datasOrdenadas = pedidosAgrupados.keys.sortedBy { convertToDate(it) } // Converta para Date ou LocalDateTime, conforme necessário
+
     LazyColumn(modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
-        items(pedidosViewModel.pedidos) { pedido ->
-            ContactItem(
-                name = pedido.nomeCliente,
-                time = formatDate(pedido.pedidoPrestador[0].dataInicio, pedido.pedidoPrestador.last().dataFim),
-                service = pedido.pedidoPrestador[0].descricaoServico,
-                formaPagamento = pedido.formaPagamentoEnum,
-                total = pedido.totalPedido
-            )
-            Spacer(modifier = Modifier.height(15.dp))
+        // Exibe as datas ordenadas e os pedidos de cada dia
+        datasOrdenadas.forEach { dataAgendamento ->
+            val pedidosDoDia = pedidosAgrupados[dataAgendamento] ?: emptyList()
+
+            // Exibe a data como título
+            item {
+                Text(
+                    text = formatDateOnly(dataAgendamento), // Formata para exibir apenas a data
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .fillMaxWidth(),
+                    color = Color.Black
+                )
+            }
+
+            // Exibe os pedidos daquele dia
+            items(pedidosDoDia) { pedido ->
+                ContactItem(
+                    name = pedido.nomeCliente,
+                    time = formatDate(pedido.pedidoPrestador[0].dataInicio, pedido.pedidoPrestador.last().dataFim),
+                    service = pedido.pedidoPrestador[0].descricaoServico,
+                    formaPagamento = pedido.formaPagamentoEnum,
+                    total = pedido.totalPedido
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+            }
         }
     }
 }
