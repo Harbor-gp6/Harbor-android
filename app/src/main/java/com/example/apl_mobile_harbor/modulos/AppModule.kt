@@ -1,27 +1,35 @@
 package com.example.apl_mobile_harbor.modulos
 
-import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.apl_mobile_harbor.classes.auth.AuthInterceptor
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
-import com.example.apl_mobile_harbor.classes.auth.TokenProvider
+import com.example.apl_mobile_harbor.classes.auth.Usuario
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor
+import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
 import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
 import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+val Context.dataStore by preferencesDataStore(name = "user_preferences")
+
 val appModule = module {
 
-    // TokenProvider como um singleton
-    single { TokenProvider }
+    single<DataStore<Preferences>> { androidContext().dataStore }
 
     // TokenManager que depende do TokenProvider
-    single { TokenManager(get()) }
+    single { TokenManager(get(), get()) }
 
     // Interceptor de autenticação que depende do TokenManager
     single { AuthInterceptor(get()) }
+
+    single<Usuario> { Usuario() }
 
     // OkHttpClient com o AuthInterceptor
     single {
@@ -33,7 +41,7 @@ val appModule = module {
     // Configuração do Retrofit com o baseUrl e GsonConverterFactory
     single {
         Retrofit.Builder()
-            .baseUrl("http://192.168.0.108:8080/") // Altere para a URL da sua API
+            .baseUrl("http://192.168.0.110:8080/") // Altere para a URL da sua API
             .client(get<OkHttpClient>()) // Adiciona o OkHttpClient configurado
             .addConverterFactory(GsonConverterFactory.create()) // Converter JSON
             .build()

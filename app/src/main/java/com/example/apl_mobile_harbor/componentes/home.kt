@@ -58,7 +58,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
-    val tokenManager = TokenManager(LocalContext.current)
+    val tokenManager = TokenManager(LocalContext.current, null)
     val usuario = tokenManager.getUsuario()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()

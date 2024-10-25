@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,11 +47,10 @@ fun ProfileScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF2F2F2))
-            .padding(16.dp),
+            .background(Color(0xFFF2F2F2)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopBar("Perfil", navController, true)
+        TopBar("Meu perfil", navController, true)
         ProfileImageSection()
         ContactInfoSection()
         Spacer(modifier = Modifier.weight(1f))
@@ -90,17 +91,15 @@ fun ProfileImageSection() {
 @Composable
 fun RatingSection() {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        repeat(5) {
-            Image(
-                painter = painterResource(id = R.drawable.estrela),
-                contentDescription = "Profile Picture",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(20.dp)
-            )
-        }
+        Text(text = "5.00", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = "5.0")
+        Image(
+            painter = painterResource(id = R.drawable.estrela_cheia),
+            contentDescription = "Profile Picture",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(20.dp)
+        )
         Spacer(modifier = Modifier.width(120.dp))
         Text(text = "73 avaliações", fontSize = 14.sp, color = Color.Black)
     }
@@ -108,10 +107,36 @@ fun RatingSection() {
 
 @Composable
 fun ContactInfoSection() {
-    Column(modifier = Modifier.padding(top = 16.dp)) {
-        ContactItem(imageRes = R.drawable.fone, info = "(82) 9999-9999")
-        ContactItem(imageRes = R.drawable.mail, info = "barbeiro@gmail.com")
-        ContactItem(imageRes = R.drawable.loca, info = "Rua Bipirópa, 200, apto 651, Ponta do Canto, Piauí - RC")
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .padding(end = 50.dp),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Button(
+            onClick = {
+
+            },
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .width(90.dp)
+                .height(40.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF0E28AC)
+            ),
+            shape = RoundedCornerShape(20)
+        ) {
+            Text("Editar")
+        }
+    }
+    Row {
+        Column(modifier = Modifier.padding(16.dp)) {
+            ContactItem(imageRes = R.drawable.telefone, info = "(82) 9999-9999")
+            ContactItem(imageRes = R.drawable.email, info = "barbeiro@gmail.com")
+            ContactItem(
+                imageRes = R.drawable.endereco,
+                info = "Rua Bipirópa, 200, apto 651, Ponta do Canto, Piauí - RC"
+            )
+        }
     }
 }
 

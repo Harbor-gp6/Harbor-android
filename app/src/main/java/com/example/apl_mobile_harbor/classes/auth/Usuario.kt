@@ -1,8 +1,9 @@
 package com.example.apl_mobile_harbor.classes.auth
 
-data class Usuario(
-    val userId: Int,
-    val nome: String,
-    val email: String,
-    val idEmpresa: Int
+class Usuario(
+    val userId: Int? = null,
+    val nome: String = "",
+    val email: String = "",
+    val idEmpresa: Int? = null,
+    val token: String = ""
 )

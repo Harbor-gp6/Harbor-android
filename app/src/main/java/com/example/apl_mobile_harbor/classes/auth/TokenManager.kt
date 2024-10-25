@@ -4,24 +4,19 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 
-class TokenManager(context: Context) {
+class TokenManager(context: Context, private var usuario: Usuario?) {
     private val prefs: SharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     private val gson = Gson()
 
-    fun saveToken(token: String, manterConectado: Boolean) {
+    fun saveToken(usuario: Usuario, manterConectado: Boolean) {
         val editor = prefs.edit()
-        TokenProvider.token = token
-        editor.putBoolean("manterConectado", manterConectado)
-        if (manterConectado) {
-            editor.putString("token", token)
-        }
-        editor.apply()
-    }
-
-    fun saveUsuario(usuario: Usuario) {
-        val editor = prefs.edit()
+        this.usuario = usuario
         val usuarioJson = gson.toJson(usuario)
         editor.putString("usuario", usuarioJson)
+        editor.putBoolean("manterConectado", manterConectado)
+        if (manterConectado) {
+            editor.putString("token", usuario.token)
+        }
         editor.apply()
     }
 
@@ -43,7 +38,7 @@ class TokenManager(context: Context) {
     }
 
     fun getToken(): String? {
-        return TokenProvider.token
+        return usuario?.token
     }
 
     fun clearToken() {
@@ -52,6 +47,5 @@ class TokenManager(context: Context) {
         editor.remove("manterConectado")
         editor.remove("usuario")
         editor.apply()
-        TokenProvider.token = null
     }
 }

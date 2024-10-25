@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -58,6 +59,8 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.8.8")
 
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
     // Jetpack Compose e navegação
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.5")
@@ -68,9 +71,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     // Koin para DI
-    implementation("io.insert-koin:koin-core:3.4.1")
-    implementation("io.insert-koin:koin-android:3.4.1")
-    implementation("io.insert-koin:koin-androidx-compose:3.4.1")
+    implementation("io.insert-koin:koin-android:4.0.0")
+    implementation("io.insert-koin:koin-androidx-compose:4.0.0")
+    implementation("io.insert-koin:koin-android:4.0.0")
 
     // Bibliotecas AndroidX e Compose
     implementation(libs.androidx.core.ktx)
