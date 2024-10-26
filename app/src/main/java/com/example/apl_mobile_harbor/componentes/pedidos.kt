@@ -18,9 +18,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +53,7 @@ import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun PedidoScreen(
@@ -60,12 +71,15 @@ fun PedidoScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
     // Atualiza a lista de pedidos no ViewModel
     pedidosViewModel.atualizarListaDePedidos()
 
     // Agrupa os pedidos por data e ordena as datas
+    var showConfirmacaoModal by remember { mutableStateOf(false) }
+    var modalIsPositive by remember { mutableStateOf(false) }
     val pedidosAgrupados = pedidosViewModel.pedidos.groupBy { it.pedidoPrestador[0].dataInicio }
     val datasOrdenadas = pedidosAgrupados.keys.sortedBy { convertToDate(it) } // Converta para Date ou LocalDateTime, conforme necessário
 
@@ -88,14 +102,81 @@ fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
             }
 
             // Exibe os pedidos daquele dia
-            items(pedidosDoDia) { pedido ->
-                ContactItem(
-                    name = pedido.nomeCliente,
-                    time = formatDate(pedido.pedidoPrestador[0].dataInicio, pedido.pedidoPrestador.last().dataFim),
-                    service = pedido.pedidoPrestador[0].descricaoServico,
-                    formaPagamento = pedido.formaPagamentoEnum,
-                    total = pedido.totalPedido
-                )
+            items(pedidosDoDia, key = { it.idPedido }) { pedido ->
+                val swipeToDismissBoxState = rememberSwipeToDismissBoxState()
+
+                LaunchedEffect(swipeToDismissBoxState.currentValue) {
+                    if (swipeToDismissBoxState.currentValue == SwipeToDismissBoxValue.StartToEnd) {
+                        modalIsPositive = true
+                        showConfirmacaoModal = true
+                    }
+                    if (swipeToDismissBoxState.currentValue == SwipeToDismissBoxValue.EndToStart) {
+                        modalIsPositive = false
+                        showConfirmacaoModal = true
+                    }
+                }
+
+                if (showConfirmacaoModal) {
+                    ConfirmacaoModal(
+                        modalIsPositive,
+                        pedido.nomeCliente,
+                        pedido.pedidoPrestador[0].descricaoServico,
+                        onDismissRequest = { showConfirmacaoModal = false },
+                        onConfirm = { showConfirmacaoModal = false }
+                    )
+                }
+
+                SwipeToDismissBox(
+                    modifier = Modifier.clip(RoundedCornerShape(8.dp)),
+                    backgroundContent = {
+                        when(swipeToDismissBoxState.dismissDirection) {
+                            SwipeToDismissBoxValue.StartToEnd -> {
+                                Box(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .background(Color(0xFFA7FFB4))
+                                ) {
+                                    Image(
+                                        modifier = Modifier
+                                            .size(70.dp)
+                                            .padding(16.dp)
+                                            .align(Alignment.CenterStart),
+                                        painter = painterResource(R.drawable.check),
+                                        contentDescription = "check")
+                                }
+                            }
+                            SwipeToDismissBoxValue.EndToStart -> {
+                                Box(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .background(Color(0xFFFFBFBF))
+                                ) {
+                                    Image(
+                                        modifier = Modifier
+                                            .size(70.dp)
+                                            .padding(16.dp)
+                                            .align(Alignment.CenterEnd),
+                                        painter = painterResource(R.drawable.cancel),
+                                        contentDescription = "cancel",
+                                    )
+                                }
+                            }
+                            SwipeToDismissBoxValue.Settled -> {}
+                        }
+                    },
+                    state = swipeToDismissBoxState
+                ) {
+                    ContactItem(
+                        name = pedido.nomeCliente,
+                        time = formatDate(
+                            pedido.pedidoPrestador[0].dataInicio,
+                            pedido.pedidoPrestador.last().dataFim
+                        ),
+                        service = pedido.pedidoPrestador[0].descricaoServico,
+                        formaPagamento = pedido.formaPagamentoEnum,
+                        total = pedido.totalPedido
+                    )
+                }
                 Spacer(modifier = Modifier.height(15.dp))
             }
         }

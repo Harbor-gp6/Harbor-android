@@ -185,8 +185,6 @@ fun Tela(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = koinVie
         Button(
             onClick = {
                 loginViewModel.login()
-                val intent = Intent(context, AppActivity::class.java)
-                context.startActivity(intent)
             },
             enabled = !loginViewModel.isEmAndamento,
             modifier = Modifier

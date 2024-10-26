@@ -55,6 +55,22 @@ fun formatDateOnly(date: String): String {
     return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(parsedDate ?: Date())
 }
 
+fun formatDate(date: String): String {
+    // Use o formato correto de acordo com as strings que você espera
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+    return try {
+        val inicioFormatado = LocalDateTime.parse(date, formatter)
+
+        // Formatar a saída para mostrar apenas a parte que você deseja
+        val outputFormatter = DateTimeFormatter.ofPattern("HH:mm")
+        inicioFormatado.format(outputFormatter)
+    } catch (e: Exception) {
+        // Tratar a exceção e retornar uma mensagem apropriada
+        "Erro ao formatar datas: ${e.message}"
+    }
+}
+
 fun formatDate(date1: String, date2: String): String {
     // Use o formato correto de acordo com as strings que você espera
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
