@@ -7,6 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiHarbor {
 
@@ -24,4 +25,15 @@ interface ApiHarbor {
 
     @GET("/pedidos/pedidosAbertos")
     suspend fun getPedidos(): Response<List<Pedido>>
+
+    @GET("/pedidos/pedidosPorData")
+    suspend fun getPedidosPorData(@Query("data") data: String): Response<List<Pedido>>
+
+    @POST("/pedidos/finalizarPedido/{codigoPedido}")
+    suspend fun finalizarPedido(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
+
+    @POST("/pedidos/cancelarPedido/{codigoPedido}")
+    suspend fun cancelarPedido(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
+
+
 }

@@ -122,7 +122,14 @@ fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
                         pedido.nomeCliente,
                         pedido.pedidoPrestador[0].descricaoServico,
                         onDismissRequest = { showConfirmacaoModal = false },
-                        onConfirm = { showConfirmacaoModal = false }
+                        onConfirm = {
+                            if (modalIsPositive) {
+                                pedidosViewModel.finalizarPedido(pedido)
+                            } else {
+                                pedidosViewModel.cancelarPedido(pedido)
+                            }
+                            showConfirmacaoModal = false
+                        }
                     )
                 }
 

@@ -12,7 +12,7 @@ import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
 import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -41,7 +41,7 @@ val appModule = module {
     // Configuração do Retrofit com o baseUrl e GsonConverterFactory
     single {
         Retrofit.Builder()
-            .baseUrl("http://192.168.0.110:8080/") // Altere para a URL da sua API
+            .baseUrl("http://192.168.0.105:8080/") // Altere para a URL da sua API
             .client(get<OkHttpClient>()) // Adiciona o OkHttpClient configurado
             .addConverterFactory(GsonConverterFactory.create()) // Converter JSON
             .build()
@@ -51,7 +51,8 @@ val appModule = module {
     single { get<Retrofit>().create(ApiHarbor::class.java) }
 
     // ViewModel LoginViewModel com injeção de ApiHarbor e TokenManager
-    viewModel { LoginViewModel(get(), get()) }
 
-    viewModel { PedidosViewModel(get(), get()) }
+    viewModelOf(::LoginViewModel)
+
+    viewModelOf(::PedidosViewModel)
 }

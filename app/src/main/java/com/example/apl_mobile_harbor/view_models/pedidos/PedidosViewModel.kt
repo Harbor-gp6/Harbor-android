@@ -2,6 +2,7 @@ package com.example.apl_mobile_harbor.view_models.pedidos
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
@@ -12,6 +13,10 @@ import kotlinx.coroutines.launch
 
 class PedidosViewModel(private val tokenManager: TokenManager, private val apiHarbor: ApiHarbor): ViewModel() {
     val pedidos = mutableStateListOf<Pedido>()
+
+    val pedidosPorData = mutableStateListOf<Pedido>()
+
+    var selectedDate = mutableStateOf("")
 
     val usuario = tokenManager.getUsuario()
 
@@ -31,10 +36,51 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
                 Log.e("api", err.toString())
             }
         }
+    }
 
-        fun getPedidos(): List<Pedido> {
-            atualizarListaDePedidos()
-            return pedidos
+    fun finalizarPedido(pedido: Pedido) {
+        viewModelScope.launch {
+            try {
+                val response = apiHarbor.finalizarPedido(pedido.codigoPedido)
+                if (response.isSuccessful) {
+                    pedidos.remove(pedido)
+                } else {
+                    Log.e("erro", "Erro ao finalizar")
+                }
+            } catch (err: Exception) {
+                Log.e("api", err.toString())
+            }
+        }
+    }
+
+    fun cancelarPedido(pedido: Pedido) {
+        viewModelScope.launch {
+            try {
+                val response = apiHarbor.cancelarPedido(pedido.codigoPedido)
+                if (response.isSuccessful) {
+                    pedidos.remove(pedido)
+                } else {
+                    Log.e("erro", "Erro ao cancelar")
+                }
+            } catch (err: Exception) {
+                Log.e("api", err.toString())
+            }
+        }
+    }
+
+    fun getPedidosPorData() {
+        viewModelScope.launch {
+            try {
+                val response = apiHarbor.getPedidosPorData(selectedDate.value)
+                if (response.isSuccessful) {
+                    pedidosPorData.clear()
+                    response.body()?.let { pedidosPorData.addAll(it) }
+                } else {
+                    Log.e("erro", "Erro ao buscar por data")
+                }
+            } catch (err: Exception) {
+                Log.e("api", err.toString())
+            }
         }
     }
 }
