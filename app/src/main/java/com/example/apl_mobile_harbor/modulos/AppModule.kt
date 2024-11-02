@@ -8,6 +8,7 @@ import com.example.apl_mobile_harbor.classes.auth.AuthInterceptor
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
 import com.example.apl_mobile_harbor.classes.auth.Usuario
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor
+import com.example.apl_mobile_harbor.view_models.avaliacao.AvaliacaoViewModel
 import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
 import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
 import okhttp3.OkHttpClient
@@ -41,7 +42,7 @@ val appModule = module {
     // Configuração do Retrofit com o baseUrl e GsonConverterFactory
     single {
         Retrofit.Builder()
-            .baseUrl("http://192.168.0.105:8080/") // Altere para a URL da sua API
+            .baseUrl("http://192.168.0.120:8080/") // Altere para a URL da sua API
             .client(get<OkHttpClient>()) // Adiciona o OkHttpClient configurado
             .addConverterFactory(GsonConverterFactory.create()) // Converter JSON
             .build()
@@ -51,6 +52,8 @@ val appModule = module {
     single { get<Retrofit>().create(ApiHarbor::class.java) }
 
     // ViewModel LoginViewModel com injeção de ApiHarbor e TokenManager
+
+    viewModelOf(::AvaliacaoViewModel)
 
     viewModelOf(::LoginViewModel)
 

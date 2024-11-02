@@ -62,12 +62,12 @@ import org.koin.core.context.startKoin
 
 class LoginActivity : ComponentActivity() {
     private val tokenManager: TokenManager by inject()
-    private val usuario: Usuario by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (tokenManager.isUserLoggedIn()) {
+            tokenManager.getUsuario()?.let { tokenManager.setUsuario(it) }
             val intent = Intent(this, AppActivity::class.java)
             startActivity(intent)
             return

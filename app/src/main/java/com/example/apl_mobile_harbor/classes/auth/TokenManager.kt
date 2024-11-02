@@ -29,6 +29,10 @@ class TokenManager(context: Context, private var usuario: Usuario?) {
         }
     }
 
+    fun setUsuario(usuario: Usuario) {
+        this.usuario = usuario
+    }
+
     fun getTokenFromPrefs(): String? {
         return prefs.getString("token", null)
     }

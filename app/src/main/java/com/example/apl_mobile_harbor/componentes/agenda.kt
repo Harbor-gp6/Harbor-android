@@ -105,7 +105,8 @@ fun AgendaDateSelector() {
 fun CardAgenda(
     name: String,
     service: String,
-    isFinalizado: Boolean
+    isFinalizado: Boolean,
+    isCancelado: Boolean
 ) {
     Box(
         modifier = Modifier
@@ -151,6 +152,13 @@ fun CardAgenda(
                     Image(painterResource(
                         R.drawable.pedido_finalizado),
                         contentDescription = "Finalizado",
+                        Modifier.size(20.dp)
+                            .align(Alignment.End)
+                    )
+                } else if (isCancelado) {
+                    Image(painterResource(
+                        R.drawable.pedido_cancelado),
+                        contentDescription = "Cancelado",
                         Modifier.size(20.dp)
                             .align(Alignment.End)
                     )
@@ -208,7 +216,8 @@ fun Servicos(pedidosViewModel: PedidosViewModel = koinViewModel()) {
                     CardAgenda(
                         pedido.nomeCliente,
                         pedido.pedidoPrestador[0].descricaoServico,
-                        pedido.statusPedidoEnum == "Finalizado"
+                        pedido.statusPedidoEnum == "Finalizado",
+                        pedido.statusPedidoEnum == "Cancelado"
                     )
                 }
             }

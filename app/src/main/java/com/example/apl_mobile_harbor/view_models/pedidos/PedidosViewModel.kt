@@ -6,19 +6,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
+import com.example.apl_mobile_harbor.classes.auth.Usuario
 import com.example.apl_mobile_harbor.classes.pedido.Pedido
 import com.example.apl_mobile_harbor.classes.pedido.convertToDate
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor
 import kotlinx.coroutines.launch
 
-class PedidosViewModel(private val tokenManager: TokenManager, private val apiHarbor: ApiHarbor): ViewModel() {
+class PedidosViewModel(private val tokenManager: TokenManager, private val apiHarbor: ApiHarbor, private val usuario: Usuario): ViewModel() {
     val pedidos = mutableStateListOf<Pedido>()
 
     val pedidosPorData = mutableStateListOf<Pedido>()
 
     var selectedDate = mutableStateOf("")
 
-    val usuario = tokenManager.getUsuario()
+    var pedidoAtual = mutableStateOf<Pedido?>(null)
 
     fun atualizarListaDePedidos() {
         viewModelScope.launch {
@@ -77,6 +78,19 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
                     response.body()?.let { pedidosPorData.addAll(it) }
                 } else {
                     Log.e("erro", "Erro ao buscar por data")
+                }
+            } catch (err: Exception) {
+                Log.e("api", err.toString())
+            }
+        }
+    }
+
+    fun getPedidoPorCodigo(codigo: String) {
+        viewModelScope.launch {
+            try {
+                val response = apiHarbor.getPedidoPorCodigo(codigo)
+                if (response.isSuccessful) {
+                    response.body()?.let { pedidoAtual.value = it }
                 }
             } catch (err: Exception) {
                 Log.e("api", err.toString())

@@ -60,6 +60,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.8")
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-core:1.1.1")
 
     // Jetpack Compose e navegação
     implementation("androidx.navigation:navigation-compose:2.7.7")

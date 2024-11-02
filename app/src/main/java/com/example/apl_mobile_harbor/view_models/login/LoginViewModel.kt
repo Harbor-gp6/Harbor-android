@@ -21,8 +21,8 @@ class LoginViewModel(private val loginApi: ApiHarbor, private val tokenManager: 
     private val _loginResponse = MutableLiveData<LoginResponse?>()
     val loginResponse: LiveData<LoginResponse?> get() = _loginResponse
 
-    var email by mutableStateOf("")
-    var senha by mutableStateOf("")
+    var email by mutableStateOf("vitoramosc@gmail.com")
+    var senha by mutableStateOf("040709qq")
 
     var manterConectado by mutableStateOf(false)
 

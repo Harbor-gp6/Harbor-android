@@ -48,6 +48,8 @@ import com.example.apl_mobile_harbor.classes.pedido.convertToDate
 import com.example.apl_mobile_harbor.classes.pedido.formatDate
 import com.example.apl_mobile_harbor.classes.pedido.formatDateOnly
 import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.text.NumberFormat
 import java.time.LocalDateTime
@@ -113,6 +115,12 @@ fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
                     if (swipeToDismissBoxState.currentValue == SwipeToDismissBoxValue.EndToStart) {
                         modalIsPositive = false
                         showConfirmacaoModal = true
+                    }
+                }
+
+                LaunchedEffect(showConfirmacaoModal) {
+                    if (!showConfirmacaoModal) {
+                        swipeToDismissBoxState.snapTo(SwipeToDismissBoxValue.Settled)
                     }
                 }
 

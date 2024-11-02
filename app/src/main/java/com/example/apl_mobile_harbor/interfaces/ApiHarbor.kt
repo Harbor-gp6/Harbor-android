@@ -1,5 +1,6 @@
 package com.example.apl_mobile_harbor.interfaces
 
+import com.example.apl_mobile_harbor.classes.avaliacao.Avaliacao
 import com.example.apl_mobile_harbor.classes.pedido.Pedido
 import retrofit2.Response
 import retrofit2.http.Body
@@ -29,11 +30,18 @@ interface ApiHarbor {
     @GET("/pedidos/pedidosPorData")
     suspend fun getPedidosPorData(@Query("data") data: String): Response<List<Pedido>>
 
+    @GET("/pedidos/{codigoPedido}")
+    suspend fun getPedidoPorCodigo(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
+
+    @GET("/avaliacoes/media-prestador")
+    suspend fun getMedia(): Response<Double>
+
+    @GET("/avaliacoes/avaliacoes-prestador")
+    suspend fun getAvaliacoes(): Response<List<Avaliacao>>
+
     @POST("/pedidos/finalizarPedido/{codigoPedido}")
     suspend fun finalizarPedido(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
 
     @POST("/pedidos/cancelarPedido/{codigoPedido}")
     suspend fun cancelarPedido(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
-
-
 }
