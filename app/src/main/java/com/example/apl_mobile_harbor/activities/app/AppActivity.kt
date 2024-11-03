@@ -32,8 +32,10 @@ import com.example.apl_mobile_harbor.R
 import com.example.apl_mobile_harbor.activities.login.LoginActivity
 import com.example.apl_mobile_harbor.componentes.AgendaScreen
 import com.example.apl_mobile_harbor.componentes.AvaliacaoScreen
+import com.example.apl_mobile_harbor.componentes.EditarServicoScreen
 import com.example.apl_mobile_harbor.componentes.HomeScreen
 import com.example.apl_mobile_harbor.componentes.PedidoScreen
+import com.example.apl_mobile_harbor.componentes.ServiceDetailScreen
 import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -52,6 +54,15 @@ class AppActivity : ComponentActivity() {
 fun Navegacao(
     navController: NavHostController
 ) {
+    // Estado que monitora se a BottomNavigationBar deve ser exibida
+    var shouldShowBottomBar by remember { mutableStateOf(true) }
+
+    // Atualiza o valor de shouldShowBottomBar sempre que a rota mudar
+    navController.addOnDestinationChangedListener { _, destination, _ ->
+        shouldShowBottomBar = destination.route != "detalhesPedidoScreen/{codigo}" &&
+        destination.route != "editarPedidoScreen"
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.weight(1f)) {
@@ -71,14 +82,28 @@ fun Navegacao(
                     composable("agendaScreen") {
                         AgendaScreen(navController)
                     }
+                    composable("detalhesPedidoScreen/{codigo}") { backStackEntry ->
+                        val codigo = backStackEntry.arguments?.getString("codigo")
+                        if (codigo != null) {
+                            ServiceDetailScreen(navController, codigo)
+                        }
+                    }
+                    composable("editarPedidoScreen/{codigo}") { backStackEntry ->
+                        val codigo = backStackEntry.arguments?.getString("codigo")
+                        if (codigo != null) {
+                            EditarServicoScreen(navController, codigo)
+                        }
+
+                    }
                 }
             }
-            BottomNavigationBar(navController = navController)
+            // Exibe a BottomNavigationBar somente se shouldShowBottomBar for true
+            if (shouldShowBottomBar) {
+                BottomNavigationBar(navController = navController)
+            }
         }
     }
 }
-
-
 
 @Composable
 fun BottomNavigationBar(

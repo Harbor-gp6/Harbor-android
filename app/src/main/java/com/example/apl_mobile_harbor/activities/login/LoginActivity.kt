@@ -51,28 +51,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.apl_mobile_harbor.activities.app.AppActivity
 import com.example.apl_mobile_harbor.R
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
-import com.example.apl_mobile_harbor.classes.auth.TokenProvider
+import com.example.apl_mobile_harbor.classes.auth.Usuario
 import com.example.apl_mobile_harbor.modulos.appModule
 import com.example.apl_mobile_harbor.ui.theme.AplmobileharborTheme
 import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.context.startKoin
 
 class LoginActivity : ComponentActivity() {
-    private lateinit var tokenManager: TokenManager
+    private val tokenManager: TokenManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startKoin {
-            androidContext(this@LoginActivity)
-            modules(appModule)
-        }
-
-        tokenManager = TokenManager(this)
 
         if (tokenManager.isUserLoggedIn()) {
-            TokenProvider.token = tokenManager.getTokenFromPrefs()
+            tokenManager.getUsuario()?.let { tokenManager.setUsuario(it) }
             val intent = Intent(this, AppActivity::class.java)
             startActivity(intent)
             return
@@ -190,10 +185,6 @@ fun Tela(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = koinVie
         Button(
             onClick = {
                 loginViewModel.login()
-                if (TokenProvider.token != null) {
-                    val intent = Intent(context, AppActivity::class.java)
-                    context.startActivity(intent)
-                }
             },
             enabled = !loginViewModel.isEmAndamento,
             modifier = Modifier

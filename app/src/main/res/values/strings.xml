@@ -38,9 +38,15 @@
     <string name="cancelar">Cancelar\nserviço</string>
     <string name="editar">Editar\nserviço</string>
     <string name="detalhes_cliente">Detalhes do cliente</string>
-    <string name="label_nome_completo">Nome completo</string>
+    <string name="detalhes_servico_produto">Serviços e produtos</string>
+    <string name="detalhes_servico">Serviço(s):</string>
+    <string name="detalhes_produto">Produto(s):</string>
+    <string name="total_pagar">Total a pagar</string>
+    <string name="sem_produtos">Não há produtos selecionados</string>
+    <string name="label_nome">Nome</string>
     <string name="label_telefone">Telefone</string>
     <string name="label_cpf">CPF</string>
+    <string name="label_metodo_pagamento">Pagamento</string>
     <string name="label_confirmar_cancelamento">Confirmar cancelamento de pedido?</string>
     <string name="label_confirmar_baixa">Confirmar serviço prestado?</string>
     <string name="label_servico">Serviço</string>

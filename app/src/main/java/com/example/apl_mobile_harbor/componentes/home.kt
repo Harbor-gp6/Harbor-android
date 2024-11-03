@@ -58,7 +58,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
-    val tokenManager = TokenManager(LocalContext.current)
+    val tokenManager = TokenManager(LocalContext.current, null)
     val usuario = tokenManager.getUsuario()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -223,7 +223,7 @@ fun MenuCard(
 
 @Composable
 fun RecentActivities() {
-    val activities = remember { mutableStateListOf<String>() }
+    val activities = remember { mutableStateListOf<String>("Teste") }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -245,7 +245,7 @@ fun ActivityItem() {
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF9DADFF) // Azul para o card
+            containerColor = Color(0xFFD9D9D9) // Azul para o card
         )
     ) {
         Row(
@@ -255,7 +255,7 @@ fun ActivityItem() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.user),
+                painter = painterResource(id = R.drawable.aberto),
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)

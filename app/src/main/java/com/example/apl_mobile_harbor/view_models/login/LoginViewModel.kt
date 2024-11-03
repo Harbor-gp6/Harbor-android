@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
-import com.example.apl_mobile_harbor.classes.auth.TokenProvider
 import com.example.apl_mobile_harbor.classes.auth.Usuario
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor.LoginResponse
@@ -22,8 +21,8 @@ class LoginViewModel(private val loginApi: ApiHarbor, private val tokenManager: 
     private val _loginResponse = MutableLiveData<LoginResponse?>()
     val loginResponse: LiveData<LoginResponse?> get() = _loginResponse
 
-    var email by mutableStateOf("")
-    var senha by mutableStateOf("")
+    var email by mutableStateOf("vitoramosc@gmail.com")
+    var senha by mutableStateOf("040709qq")
 
     var manterConectado by mutableStateOf(false)
 
@@ -46,9 +45,9 @@ class LoginViewModel(private val loginApi: ApiHarbor, private val tokenManager: 
                     if (response.isSuccessful) {
                         _loginResponse.value = response.body()
                         _loginResponse.value?.let {
-                            tokenManager.saveToken(it.token, manterConectado)
-                            val usuario = Usuario(it.userId, it.nome, it.email, it.idEmpresa)
-                            tokenManager.saveUsuario(usuario)
+
+                            val usuario = Usuario(it.userId, it.nome, it.email, it.idEmpresa, it.token)
+                            tokenManager.saveToken(usuario, manterConectado)
                         }
                     } else {
                         _error.value = "Login failed: ${response.errorBody()?.string()}"
