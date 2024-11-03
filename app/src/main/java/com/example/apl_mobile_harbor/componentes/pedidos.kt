@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.classes.pedido.Pedido
 import com.example.apl_mobile_harbor.classes.pedido.convertToDate
 import com.example.apl_mobile_harbor.classes.pedido.formatDate
 import com.example.apl_mobile_harbor.classes.pedido.formatDateOnly
@@ -68,14 +69,17 @@ fun PedidoScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopBar(stringResource(R.string.label_meus_servicos), navController)
-        ServiceInfo()
+        ServiceInfo(navController = navController)
         Spacer(modifier = Modifier.weight(1f))
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
+fun ServiceInfo(
+    pedidosViewModel: PedidosViewModel = koinViewModel(),
+    navController: NavHostController
+) {
     // Atualiza a lista de pedidos no ViewModel
     pedidosViewModel.atualizarListaDePedidos()
 
@@ -83,7 +87,8 @@ fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
     var showConfirmacaoModal by remember { mutableStateOf(false) }
     var modalIsPositive by remember { mutableStateOf(false) }
     val pedidosAgrupados = pedidosViewModel.pedidos.groupBy { it.pedidoPrestador[0].dataInicio }
-    val datasOrdenadas = pedidosAgrupados.keys.sortedBy { convertToDate(it) } // Converta para Date ou LocalDateTime, conforme necessário
+    val datasOrdenadas = pedidosAgrupados.keys.sortedBy { convertToDate(it) }
+    var pedidoSelecionado by remember { mutableStateOf<Pedido?>(null) }
 
     LazyColumn(modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp)) {
         // Exibe as datas ordenadas e os pedidos de cada dia
@@ -116,6 +121,7 @@ fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
                         modalIsPositive = false
                         showConfirmacaoModal = true
                     }
+                    pedidoSelecionado = pedido
                 }
 
                 LaunchedEffect(showConfirmacaoModal) {
@@ -124,7 +130,7 @@ fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
                     }
                 }
 
-                if (showConfirmacaoModal) {
+                if (showConfirmacaoModal && pedidoSelecionado == pedido) {
                     ConfirmacaoModal(
                         modalIsPositive,
                         pedido.nomeCliente,
@@ -182,6 +188,8 @@ fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
                     state = swipeToDismissBoxState
                 ) {
                     ContactItem(
+                        codigoPedido = pedido.codigoPedido,
+                        pedidosViewModel,
                         name = pedido.nomeCliente,
                         time = formatDate(
                             pedido.pedidoPrestador[0].dataInicio,
@@ -189,7 +197,8 @@ fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
                         ),
                         service = pedido.pedidoPrestador[0].descricaoServico,
                         formaPagamento = pedido.formaPagamentoEnum,
-                        total = pedido.totalPedido
+                        total = pedido.totalPedido,
+                        navController
                     )
                 }
                 Spacer(modifier = Modifier.height(15.dp))
@@ -200,13 +209,15 @@ fun ServiceInfo(pedidosViewModel: PedidosViewModel = koinViewModel()) {
 
 @Composable
 fun ContactItem(
+    codigoPedido: String,
+    pedidosViewModel: PedidosViewModel,
     name: String,
     time: String,
     service: String,
     formaPagamento: String,
-    total: Double
+    total: Double,
+    navController: NavHostController
 ) {
-    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -214,7 +225,7 @@ fun ContactItem(
             .padding(8.dp)
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = {
-                // Ação ao clicar
+                navController.navigate("detalhesPedidoScreen/$codigoPedido")
             })
     ) {
         Row(

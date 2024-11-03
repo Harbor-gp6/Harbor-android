@@ -1,6 +1,5 @@
 package com.example.apl_mobile_harbor.componentes
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,50 +30,53 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.classes.pedido.formatDate
+import com.example.apl_mobile_harbor.classes.pedido.formatDateOnly
+import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ServiceDetailScreen() {
-    val context = LocalContext.current
+fun ServiceDetailScreen(
+    navController: NavHostController,
+    codigo: String,
+    pedidosViewModel: PedidosViewModel = koinViewModel()
+) {
+
+    val pedido by pedidosViewModel.pedidoAtual.observeAsState()
+
+    LaunchedEffect(codigo) {
+        codigo.let {
+            pedidosViewModel.getPedidoPorCodigo(it) // Chama a função que altera `pedidoAtual` na ViewModel
+        }
+    }
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF5F5F5))
             .padding(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 0.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.seta_esquerda),
-                    contentDescription = "Back",
-                    tint = Color.Black,
-                    modifier = Modifier.size(24.dp)
-                        .clickable(onClick = {
+        pedido?.let { TopBar(title = it.nomeCliente, navController) }
 
-                        })
-                )
-                Text(
-                    text = "José Alves",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.size(24.dp))
-            }
-            Text(text = "Terça, 10 de Set 24 | 10:00", fontSize = 14.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp), // Adiciona um pouco de espaço acima e abaixo
+            contentAlignment = Alignment.Center // Centraliza o conteúdo
+        ) {
+            Text(
+                text = "${pedido?.let { convertDateStringToFormattedDate(it.dataAgendamento) }} | ${pedido?.pedidoPrestador?.get(0)?.let { formatDate(it.dataInicio) }}",
+                fontWeight = FontWeight.Bold
+            )
         }
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -85,6 +91,7 @@ fun ServiceDetailScreen() {
                 icon = R.drawable.check,
                 text = stringResource(R.string.dar_baixa),
                 onClick = {
+
                 }
             )
             ActionButton(
@@ -97,6 +104,7 @@ fun ServiceDetailScreen() {
                 icon = R.drawable.edit,
                 text = stringResource(R.string.editar),
                 onClick = {
+                    navController.navigate("editarPedidoScreen")
                 }
             )
         }
@@ -122,13 +130,12 @@ fun ServiceDetailScreen() {
 
 
         Column(modifier = Modifier.padding(16.dp)) {
-            InfoRow(label = stringResource(R.string.label_nome_completo) + ":", info = "José Alves")
-            InfoRow(label = stringResource(R.string.label_email) + ":", info = "jose.alves@gmail.com")
-            InfoRow(label = stringResource(R.string.label_telefone) + ":", info = "(82) 9999-9999")
-            InfoRow(label = stringResource(R.string.label_cpf) + ":", info = "423.713.483-85")
+            pedido?.let { InfoRow(label = stringResource(R.string.label_nome) + ":", info = it.nomeCliente) }
+            pedido?.let { InfoRow(label = stringResource(R.string.label_email) + ":", info = it.emailCliente) }
+            pedido?.let { InfoRow(label = stringResource(R.string.label_telefone) + ":", info = it.telefoneCliente) }
+            pedido?.let { InfoRow(label = stringResource(R.string.label_cpf) + ":", info = it.cpfCliente) }
         }
         Spacer(modifier = Modifier.weight(1f))
-//        BottomNavigationBar()
     }
 }
 
@@ -138,7 +145,7 @@ fun ActionButton(icon: Int, text: String, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .background(Color.White, shape = RoundedCornerShape(8.dp))
-            .size(width = 100.dp, height = 100.dp)
+            .size(width = 100.dp, height = 150.dp)
             .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -172,14 +179,18 @@ fun InfoRow(label: String, info: String) {
         Text(
             text = label,
             color = Color.DarkGray,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(0.3f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
-        Spacer(modifier = Modifier.width(150.dp))
+        Spacer(modifier = Modifier.width(50.dp))
         Text(
-            modifier = Modifier,
+            modifier = Modifier.weight(0.7f),
             text = info,
             color = Color.DarkGray,
-            textAlign = TextAlign.Right
+            textAlign = TextAlign.Right,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

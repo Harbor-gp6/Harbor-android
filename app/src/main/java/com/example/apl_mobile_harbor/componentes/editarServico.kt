@@ -29,11 +29,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun EditarServicoScreen() {
-    val context = LocalContext.current
+fun EditarServicoScreen(
+    navController: NavHostController,
+    pedidosViewModel: PedidosViewModel = koinViewModel()
+) {
+    val pedido = pedidosViewModel.pedidoAtual.value
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,14 +63,16 @@ fun EditarServicoScreen() {
                     contentDescription = "Back",
                     tint = Color.Black,
                     modifier = Modifier.size(24.dp)
-                        .clickable(onClick = {  })
+                        .clickable(onClick = { navController.popBackStack() })
                 )
-                Text(
-                    text = "José Alves",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
+                if (pedido != null) {
+                    Text(
+                        text = pedido.nomeCliente,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
                 Spacer(modifier = Modifier.size(24.dp))
             }
             Text(
@@ -84,24 +92,7 @@ fun EditarServicoScreen() {
                 .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ActionButton(
-                icon = R.drawable.check,
-                text = stringResource(R.string.dar_baixa),
-                onClick = {
-                }
-            )
-            ActionButton(
-                icon = R.drawable.cancel,
-                text = stringResource(R.string.cancelar),
-                onClick = {
-                }
-            )
-            ActionButton(
-                icon = R.drawable.edit,
-                text = stringResource(R.string.editar),
-                onClick = {
-                }
-            )
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -125,8 +116,9 @@ fun EditarServicoScreen() {
 
         Column(
             modifier = Modifier.fillMaxWidth()
+                .padding(16.dp)
         ) {
-            CustomTextField(label = stringResource(R.string.label_nome_completo))
+            CustomTextField(label = stringResource(R.string.label_nome))
             CustomTextField(label = stringResource(R.string.label_email))
             CustomTextField(label = stringResource(R.string.label_telefone))
             CustomTextField(label = stringResource(R.string.label_cpf))

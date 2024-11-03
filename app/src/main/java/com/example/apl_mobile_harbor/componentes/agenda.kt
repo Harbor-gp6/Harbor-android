@@ -51,6 +51,7 @@ import com.example.apl_mobile_harbor.R
 import com.example.apl_mobile_harbor.classes.pedido.formatDate
 import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
 import org.koin.androidx.compose.koinViewModel
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -291,6 +292,21 @@ fun DatePickerDocked(pedidosViewModel: PedidosViewModel = koinViewModel()) {
 fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("dd MMM yyyy", Locale.forLanguageTag("pt-BR"))
     return formatter.format(Date(millis))
+}
+
+fun convertDateStringToFormattedDate(dateString: String): String {
+    // Defina o formato da string de data que você está passando como parâmetro
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.forLanguageTag("pt-BR"))
+    val outputFormat = SimpleDateFormat("EEEE, dd MMM yyyy", Locale.forLanguageTag("pt-BR"))
+
+    return try {
+        // Converte a string de data em um objeto Date
+        val date = inputFormat.parse(dateString)
+        // Formata a data no formato desejado
+        date?.let { outputFormat.format(it) } ?: "Data inválida"
+    } catch (e: ParseException) {
+        "Data inválida"
+    }
 }
 
 fun convertToApiDateFormat(millis: Long): String {

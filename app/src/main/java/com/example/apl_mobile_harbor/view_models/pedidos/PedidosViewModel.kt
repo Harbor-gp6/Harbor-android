@@ -3,6 +3,8 @@ package com.example.apl_mobile_harbor.view_models.pedidos
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
@@ -19,19 +21,19 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
 
     var selectedDate = mutableStateOf("")
 
-    var pedidoAtual = mutableStateOf<Pedido?>(null)
+    val _pedidoAtual = MutableLiveData<Pedido?>()
+
+    val pedidoAtual: LiveData<Pedido?> get() = _pedidoAtual
 
     fun atualizarListaDePedidos() {
         viewModelScope.launch {
             try {
-                if (usuario != null) {
-                    val retorno = apiHarbor.getPedidos()
-                    if (retorno.isSuccessful) {
-                        pedidos.clear()
-                        pedidos.addAll(retorno.body()?.sortedBy { convertToDate(it.dataAgendamento) } ?: emptyList())
-                    } else {
-                        Log.i("erro", "Erro")
-                    }
+                val retorno = apiHarbor.getPedidos()
+                if (retorno.isSuccessful) {
+                    pedidos.clear()
+                    pedidos.addAll(retorno.body()?.sortedBy { convertToDate(it.dataAgendamento) } ?: emptyList())
+                } else {
+                    Log.i("erro", "Erro")
                 }
             } catch (err: Exception) {
                 Log.e("api", err.toString())
@@ -90,7 +92,7 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
             try {
                 val response = apiHarbor.getPedidoPorCodigo(codigo)
                 if (response.isSuccessful) {
-                    response.body()?.let { pedidoAtual.value = it }
+                    response.body()?.let { _pedidoAtual.value = it }
                 }
             } catch (err: Exception) {
                 Log.e("api", err.toString())

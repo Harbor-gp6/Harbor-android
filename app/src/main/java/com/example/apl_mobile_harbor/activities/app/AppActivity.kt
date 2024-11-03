@@ -32,8 +32,10 @@ import com.example.apl_mobile_harbor.R
 import com.example.apl_mobile_harbor.activities.login.LoginActivity
 import com.example.apl_mobile_harbor.componentes.AgendaScreen
 import com.example.apl_mobile_harbor.componentes.AvaliacaoScreen
+import com.example.apl_mobile_harbor.componentes.EditarServicoScreen
 import com.example.apl_mobile_harbor.componentes.HomeScreen
 import com.example.apl_mobile_harbor.componentes.PedidoScreen
+import com.example.apl_mobile_harbor.componentes.ServiceDetailScreen
 import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -70,6 +72,15 @@ fun Navegacao(
                     }
                     composable("agendaScreen") {
                         AgendaScreen(navController)
+                    }
+                    composable("detalhesPedidoScreen/{codigo}") { backStackEntry ->
+                        val codigo = backStackEntry.arguments?.getString("codigo")
+                        if (codigo != null) {
+                            ServiceDetailScreen(navController, codigo)
+                        }
+                    }
+                    composable("editarPedidoScreen") {
+                        EditarServicoScreen(navController)
                     }
                 }
             }

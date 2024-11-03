@@ -38,7 +38,7 @@
     <string name="cancelar">Cancelar\nserviço</string>
     <string name="editar">Editar\nserviço</string>
     <string name="detalhes_cliente">Detalhes do cliente</string>
-    <string name="label_nome_completo">Nome completo</string>
+    <string name="label_nome">Nome</string>
     <string name="label_telefone">Telefone</string>
     <string name="label_cpf">CPF</string>
     <string name="label_confirmar_cancelamento">Confirmar cancelamento de pedido?</string>
