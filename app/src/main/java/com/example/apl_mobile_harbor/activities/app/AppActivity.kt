@@ -54,6 +54,15 @@ class AppActivity : ComponentActivity() {
 fun Navegacao(
     navController: NavHostController
 ) {
+    // Estado que monitora se a BottomNavigationBar deve ser exibida
+    var shouldShowBottomBar by remember { mutableStateOf(true) }
+
+    // Atualiza o valor de shouldShowBottomBar sempre que a rota mudar
+    navController.addOnDestinationChangedListener { _, destination, _ ->
+        shouldShowBottomBar = destination.route != "detalhesPedidoScreen/{codigo}" &&
+        destination.route != "editarPedidoScreen"
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.weight(1f)) {
@@ -79,17 +88,22 @@ fun Navegacao(
                             ServiceDetailScreen(navController, codigo)
                         }
                     }
-                    composable("editarPedidoScreen") {
-                        EditarServicoScreen(navController)
+                    composable("editarPedidoScreen/{codigo}") { backStackEntry ->
+                        val codigo = backStackEntry.arguments?.getString("codigo")
+                        if (codigo != null) {
+                            EditarServicoScreen(navController, codigo)
+                        }
+
                     }
                 }
             }
-            BottomNavigationBar(navController = navController)
+            // Exibe a BottomNavigationBar somente se shouldShowBottomBar for true
+            if (shouldShowBottomBar) {
+                BottomNavigationBar(navController = navController)
+            }
         }
     }
 }
-
-
 
 @Composable
 fun BottomNavigationBar(

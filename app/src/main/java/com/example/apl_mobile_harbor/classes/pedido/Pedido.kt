@@ -87,3 +87,16 @@ fun formatDate(date1: String, date2: String): String {
         "Erro ao formatar datas: ${e.message}"
     }
 }
+
+fun formatarCpf(cpf: String): String {
+    // Remove caracteres não numéricos
+    val numeros = cpf.replace(Regex("[^0-9]"), "")
+
+    return when {
+        numeros.length < 3 -> numeros
+        numeros.length < 6 -> "${numeros.substring(0, 3)}.${numeros.substring(3)}"
+        numeros.length < 9 -> "${numeros.substring(0, 3)}.${numeros.substring(3, 6)}.${numeros.substring(6)}"
+        numeros.length == 11 -> "${numeros.substring(0, 3)}.${numeros.substring(3, 6)}.${numeros.substring(6, 9)}-${numeros.substring(9)}"
+        else -> cpf // Retorna o CPF original se não for válido
+    }
+}

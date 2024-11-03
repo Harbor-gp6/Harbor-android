@@ -189,7 +189,6 @@ fun ServiceInfo(
                 ) {
                     ContactItem(
                         codigoPedido = pedido.codigoPedido,
-                        pedidosViewModel,
                         name = pedido.nomeCliente,
                         time = formatDate(
                             pedido.pedidoPrestador[0].dataInicio,
@@ -210,7 +209,6 @@ fun ServiceInfo(
 @Composable
 fun ContactItem(
     codigoPedido: String,
-    pedidosViewModel: PedidosViewModel,
     name: String,
     time: String,
     service: String,

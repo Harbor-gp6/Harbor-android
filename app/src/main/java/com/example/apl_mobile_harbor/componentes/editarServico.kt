@@ -1,6 +1,5 @@
 package com.example.apl_mobile_harbor.componentes
 
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,10 +18,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,9 +38,15 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun EditarServicoScreen(
     navController: NavHostController,
+    codigo: String,
     pedidosViewModel: PedidosViewModel = koinViewModel()
 ) {
-    val pedido = pedidosViewModel.pedidoAtual.value
+    val pedido by pedidosViewModel.pedidoAtual.observeAsState()
+
+    LaunchedEffect(codigo) {
+        pedidosViewModel.getPedidoPorCodigo(codigo)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,7 +74,7 @@ fun EditarServicoScreen(
                 )
                 if (pedido != null) {
                     Text(
-                        text = pedido.nomeCliente,
+                        text = pedido!!.nomeCliente,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
