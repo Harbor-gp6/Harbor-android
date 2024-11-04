@@ -27,12 +27,14 @@ data class PedidoPrestador(
     val nomePrestador: String,
     val descricaoServico: String,
     val dataInicio: String,
-    val dataFim: String
+    val dataFim: String,
+    val valorServico: Double
 )
 
 data class PedidoProduto(
     val nomeProduto: String,
-    val quantidade: Int
+    val quantidade: Int,
+    val valorProduto: Double
 )
 
 fun convertToDate(date: String): LocalDateTime? {

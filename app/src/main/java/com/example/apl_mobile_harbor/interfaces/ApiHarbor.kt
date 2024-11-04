@@ -2,6 +2,9 @@ package com.example.apl_mobile_harbor.interfaces
 
 import com.example.apl_mobile_harbor.classes.avaliacao.Avaliacao
 import com.example.apl_mobile_harbor.classes.pedido.Pedido
+import com.example.apl_mobile_harbor.classes.prestador.Prestador
+import com.example.apl_mobile_harbor.classes.produto.Produto
+import com.example.apl_mobile_harbor.classes.servico.Servico
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -35,6 +38,15 @@ interface ApiHarbor {
 
     @GET("/avaliacoes/media-prestador")
     suspend fun getMedia(): Response<Double>
+
+    @GET("/servicos")
+    suspend fun getServicos(): Response<List<Servico>>
+
+    @GET("/produtos")
+    suspend fun getProdutos(): Response<List<Produto>>
+
+    @GET("/usuarios/empresa/{empresaId}")
+    suspend fun getPrestadores(@Path("empresaId") empresaId: Int): Response<List<Prestador>>
 
     @GET("/avaliacoes/avaliacoes-prestador")
     suspend fun getAvaliacoes(): Response<List<Avaliacao>>
