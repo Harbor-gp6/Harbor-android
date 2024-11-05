@@ -16,7 +16,7 @@ import com.example.apl_mobile_harbor.interfaces.ApiHarbor.LoginRequest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val loginApi: ApiHarbor, private val tokenManager: TokenManager) : ViewModel() {
+class LoginViewModel(private val loginApi: ApiHarbor, private val tokenManager: TokenManager, val usuario: Usuario) : ViewModel() {
 
     private val _loginResponse = MutableLiveData<LoginResponse?>()
     val loginResponse: LiveData<LoginResponse?> get() = _loginResponse
@@ -46,8 +46,14 @@ class LoginViewModel(private val loginApi: ApiHarbor, private val tokenManager: 
                         _loginResponse.value = response.body()
                         _loginResponse.value?.let {
 
-                            val usuario = Usuario(it.userId, it.nome, it.email, it.idEmpresa, it.token)
-                            tokenManager.saveToken(usuario, manterConectado)
+                            val novoUsuario = Usuario(it.userId, it.nome, it.email, it.idEmpresa, it.token)
+                            tokenManager.saveToken(novoUsuario, manterConectado)
+
+                            usuario.userId = it.userId
+                            usuario.nome = it.nome
+                            usuario.token = it.token
+                            usuario.email = it.email
+                            usuario.idEmpresa = it.idEmpresa
                         }
                     } else {
                         _error.value = "Login failed: ${response.errorBody()?.string()}"

@@ -24,6 +24,8 @@ data class Pedido(
 )
 
 data class PedidoPrestador(
+    val idPrestador: Int,
+    val idServico: Int,
     val nomePrestador: String,
     val descricaoServico: String,
     val dataInicio: String,
@@ -32,6 +34,7 @@ data class PedidoPrestador(
 )
 
 data class PedidoProduto(
+    val idProduto: Int,
     val nomeProduto: String,
     val quantidade: Int,
     val valorProduto: Double
