@@ -44,6 +44,7 @@
     <string name="total_pagar">Total a pagar</string>
     <string name="sem_produtos">Não há produtos selecionados</string>
     <string name="label_nome">Nome</string>
+    <string name="label_sobrenome">Sobrenome</string>
     <string name="label_telefone">Telefone</string>
     <string name="label_cpf">CPF</string>
     <string name="label_metodo_pagamento">Pagamento</string>

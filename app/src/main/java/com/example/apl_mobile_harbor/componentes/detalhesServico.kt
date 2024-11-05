@@ -84,11 +84,8 @@ fun ServiceDetailScreen(
     }
 
     Column {
-        pedido?.let {
-            TopBar(title = it.nomeCliente, navController)
-        }
+        pedido?.let { TopBar(title = it.nomeCliente, navController) }
 
-        Spacer(modifier = Modifier.height(16.dp))
 
         // Conteúdo rolável
         Column(
@@ -98,6 +95,7 @@ fun ServiceDetailScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             pedido?.let { pedido ->
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -105,13 +103,11 @@ fun ServiceDetailScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "${convertDateStringToFormattedDate(pedido.dataAgendamento)} | ${pedido.pedidoPrestador.getOrNull(0)?.let { formatDate(it.dataInicio) }}",
+                        text = "${pedido.let { convertDateStringToFormattedDate(it.dataAgendamento) }} | ${
+                            pedido.pedidoPrestador.getOrNull(0)?.let { formatDate(it.dataInicio) }}",
                         fontWeight = FontWeight.Bold
                     )
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -210,7 +206,7 @@ fun ServiceDetailScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(text = servico.descricaoServico, color = Color.DarkGray)
-                        Text(text = "R$45,90", color = Color.DarkGray)
+                        Text(text = "R$${String.format(Locale("pt", "BR"),"%.2f", servico.valorServico).replace(".", ",")}", color = Color.DarkGray)
                     }
                 }
 
@@ -244,7 +240,7 @@ fun ServiceDetailScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = "${produto.quantidade}x ${produto.nomeProduto}", color = Color.DarkGray)
-                            Text(text = "R$15,50", color = Color.DarkGray)
+                            Text(text = "R$${String.format(Locale("pt", "BR"),"%.2f", produto.valorProduto * produto.quantidade).replace(".", ",")}", color = Color.DarkGray)
                         }
                     }
                 }

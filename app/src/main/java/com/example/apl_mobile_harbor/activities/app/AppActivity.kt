@@ -60,7 +60,7 @@ fun Navegacao(
     // Atualiza o valor de shouldShowBottomBar sempre que a rota mudar
     navController.addOnDestinationChangedListener { _, destination, _ ->
         shouldShowBottomBar = destination.route != "detalhesPedidoScreen/{codigo}" &&
-        destination.route != "editarPedidoScreen"
+        destination.route != "editarPedidoScreen/{codigo}"
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

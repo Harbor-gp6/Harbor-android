@@ -62,12 +62,14 @@ import org.koin.core.context.startKoin
 
 class LoginActivity : ComponentActivity() {
     private val tokenManager: TokenManager by inject()
+    private val usuario: Usuario by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (tokenManager.isUserLoggedIn()) {
-            tokenManager.getUsuario()?.let { tokenManager.setUsuario(it) }
+            tokenManager.getUsuario()?.let { tokenManager.setUsuario(it)
+            tokenManager.saveToken(it, true)}
             val intent = Intent(this, AppActivity::class.java)
             startActivity(intent)
             return
@@ -75,14 +77,14 @@ class LoginActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AplmobileharborTheme {
-                SplashScreen()
+                SplashScreen(usuario)
             }
         }
     }
 }
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(usuario: Usuario) {
     var showMainContent by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -91,7 +93,7 @@ fun SplashScreen() {
     }
 
     if (showMainContent) {
-        MainContent()
+        MainContent(usuario)
     } else {
         SplashScreenContent()
     }
@@ -115,20 +117,21 @@ fun SplashScreenContent() {
 }
 
 @Composable
-fun MainContent() {
+fun MainContent(usuario: Usuario) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF2F2F2))
     ) { innerPadding ->
         Tela(
+            usuario,
             modifier = Modifier.padding(innerPadding)
         )
     }
 }
 
 @Composable
-fun Tela(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = koinViewModel()) {
+fun Tela(usuario: Usuario, modifier: Modifier = Modifier, loginViewModel: LoginViewModel = koinViewModel()) {
     val context = LocalContext.current
     val loginResponse by loginViewModel.loginResponse.observeAsState()
 
@@ -258,14 +261,5 @@ fun ModalErro(loginViewModel: LoginViewModel = viewModel()) {
             loginViewModel.erroApi = false
             loginViewModel.emailOuSenhaEmBranco = false
         }
-    }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GreetingPreview() {
-    AplmobileharborTheme {
-        MainContent()
     }
 }
