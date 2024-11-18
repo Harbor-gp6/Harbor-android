@@ -17,6 +17,8 @@ import com.example.apl_mobile_harbor.classes.pedido.PedidoCriacao
 import com.example.apl_mobile_harbor.classes.pedido.PedidoPrestadorCriacao
 import com.example.apl_mobile_harbor.classes.pedido.PedidoProdutoCriacao
 import com.example.apl_mobile_harbor.classes.pedido.convertToDate
+import com.example.apl_mobile_harbor.classes.prestador.Prestador
+import com.example.apl_mobile_harbor.classes.servico.Servico
 import com.example.apl_mobile_harbor.componentes.separarNomeCompleto
 import com.example.apl_mobile_harbor.interfaces.ApiHarbor
 import kotlinx.coroutines.launch
@@ -33,6 +35,15 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
     val empresaPrestador = mutableStateOf<Empresa?>(null)
 
     val pedidoAtual: LiveData<Pedido?> get() = _pedidoAtual
+
+    private val _servicoSelectionState = MutableLiveData<Map<Int, Boolean>>(emptyMap())
+    val servicoSelectionState: LiveData<Map<Int, Boolean>> get() = _servicoSelectionState
+
+    private val _prestadorSelectionState = MutableLiveData<Map<Int, Prestador?>>()
+    val prestadorSelectionState: LiveData<Map<Int, Prestador?>> get() = _prestadorSelectionState
+
+    private val _servicoPrestadorState = MutableLiveData<Map<Int, Int?>>()
+    val servicoPrestadorState: LiveData<Map<Int, Int?>> get() = _servicoPrestadorState
 
     private val _pedidoCriacao = mutableStateOf<PedidoCriacao?>(null)
     val pedidoCriacao: State<PedidoCriacao?> = _pedidoCriacao
@@ -104,7 +115,10 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
             try {
                 val response = apiHarbor.getPedidoPorCodigo(codigo)
                 if (response.isSuccessful) {
-                    response.body()?.let { _pedidoAtual.value = it }
+                    response.body()?.let {
+                        _pedidoAtual.value = it
+                        carregarPedido(it)
+                    }
                 }
             } catch (err: Exception) {
                 Log.e("api", err.toString())
@@ -166,20 +180,6 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
         _pedidoCriacao.value = _pedidoCriacao.value?.copy(formaPagamentoEnum = novaForma)
     }
 
-    fun atualizarPedidoPrestador(servicoId: Int, prestadorId: Int?) {
-        _pedidoCriacao.value = _pedidoCriacao.value?.let { pedidoCriacao ->
-            val novosPedidoPrestador = pedidoCriacao.pedidoPrestador.toMutableList().apply {
-                // Remove qualquer pedido relacionado ao serviço
-                removeIf { it.servicoId == servicoId }
-                // Adiciona o novo pedido caso prestadorId não seja nulo
-                prestadorId?.let {
-                    add(PedidoPrestadorCriacao(prestadorId = it, servicoId = servicoId))
-                }
-            }
-            pedidoCriacao.copy(pedidoPrestador = novosPedidoPrestador)
-        }
-    }
-
     fun atualizarPedidoProduto(produtoId: Int, quantidade: Int) {
         _pedidoCriacao.value = _pedidoCriacao.value?.let { pedidoCriacao ->
             val novosPedidoProdutos = pedidoCriacao.pedidoProdutos.toMutableList().apply {
@@ -195,20 +195,17 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
     }
 
 
-    fun atualizarPedidoCriacao() {
+    fun atualizarPedidoCriacao(id: Int) {
         val pedidoCriacao = _pedidoCriacao.value
         if (pedidoCriacao != null) {
             viewModelScope.launch {
                 try {
-                    val response =
-                        _pedidoAtual.value?.let { apiHarbor.atualizarPedido(pedidoCriacao, it.idPedido) } // Chame sua função de API para atualização
-                    if (response != null) {
-                        if (response.isSuccessful) {
-                            Log.i("sucesso", "Pedido atualizado com sucesso")
-                            // Aqui, você pode atualizar o estado da UI ou realizar outras ações após o sucesso
-                        } else {
-                            Log.e("erro", "Erro ao atualizar pedido")
-                        }
+                    val response = apiHarbor.atualizarPedido(pedidoCriacao, id) // Chame sua função de API para atualização
+                    if (response.isSuccessful) {
+                        Log.i("sucesso", "Pedido atualizado com sucesso")
+                        // Aqui, você pode atualizar o estado da UI ou realizar outras ações após o sucesso
+                    } else {
+                        Log.e("erro", "Erro ao atualizar pedido")
                     }
                 } catch (err: Exception) {
                     Log.e("api", err.toString())
@@ -219,6 +216,88 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
         }
     }
 
+    fun carregarEstadosDeServico(pedido: Pedido?, servicos: List<Servico>) {
+        pedido?.let {
+            val estadoInicial = servicos.associate { servico ->
+                servico.id to it.pedidoPrestador.any { prestador ->
+                    prestador.idServico == servico.id
+                }
+            }
+            _servicoSelectionState.value = estadoInicial
+        }
+    }
+
+    fun carregarEstadosDePrestador(pedido: Pedido?, prestadores: List<Prestador>) {
+        pedido?.let {
+            // Mapeia o ID do prestador para o prestador real
+            val estadoInicial = prestadores.associate { prestador ->
+                // Aqui verificamos se o prestador está associado ao pedido
+                val prestadorAssociado = it.pedidoPrestador
+                    .firstOrNull { pedidoPrestador ->
+                        pedidoPrestador.idPrestador == prestador.id
+                    }
+
+                // Associamos o prestador real no mapa
+                prestador.id to if (prestadorAssociado != null) prestador else null
+            }
+
+            // Atualiza o estado com o mapa de prestadores associados
+            _prestadorSelectionState.value = estadoInicial
+        }
+    }
+
+
+
+
+    fun atualizarServicoSelecionado(servicoId: Int, isSelected: Boolean) {
+        val updatedState = _servicoSelectionState.value?.toMutableMap() ?: mutableMapOf()
+        updatedState[servicoId] = isSelected
+        _servicoSelectionState.value = updatedState
+    }
+
+    fun atualizarPrestadorParaServico(servicoId: Int, prestadorId: Int?) {
+        // Atualiza o estado do prestador para o serviço no estado compartilhado
+        val prestadorStateAtualizado = _servicoPrestadorState.value?.toMutableMap() ?: mutableMapOf()
+        prestadorStateAtualizado[servicoId] = prestadorId
+        _servicoPrestadorState.value = prestadorStateAtualizado
+    }
+
+    fun atualizarPedidoPrestador(servicoId: Int, prestadorId: Int?) {
+        // Atualiza o pedido de criação com a seleção de prestador
+        _pedidoCriacao.value = _pedidoCriacao.value?.let { pedidoCriacao ->
+            val novosPedidoPrestador = pedidoCriacao.pedidoPrestador.toMutableList().apply {
+                // Remove qualquer pedido já existente para o serviço atual
+                removeIf { it.servicoId == servicoId }
+                // Se o prestadorId for fornecido, associa o prestador ao serviço
+                prestadorId?.let {
+                    add(PedidoPrestadorCriacao(prestadorId = it, servicoId = servicoId))
+                }
+            }
+            // Retorna o pedido com a lista de prestadores atualizada
+            pedidoCriacao.copy(pedidoPrestador = novosPedidoPrestador)
+        }
+    }
+
+
+
+    fun salvarSelecoesDeServicos() {
+        val selecoesAtuais = _servicoSelectionState.value ?: return
+        val prestadorSelecoes = _servicoPrestadorState.value ?: return
+
+        // Filtrar apenas os serviços selecionados
+        val selecionados = selecoesAtuais.filterValues { it }.keys
+
+        _pedidoCriacao.value = _pedidoCriacao.value?.copy(
+            pedidoPrestador = selecionados.mapNotNull { servicoId ->
+                val prestadorId = prestadorSelecoes[servicoId]
+                if (prestadorId != null) {
+                    PedidoPrestadorCriacao(prestadorId = prestadorId, servicoId = servicoId)
+                } else {
+                    null // Ignorar se o prestador não foi definido
+                }
+            }
+        )
+    }
 
 
 }
