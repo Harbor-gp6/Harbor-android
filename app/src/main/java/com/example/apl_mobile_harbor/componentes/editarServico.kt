@@ -33,7 +33,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,16 +46,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.apl_mobile_harbor.R
-import com.example.apl_mobile_harbor.classes.pedido.PedidoCriacao
-import com.example.apl_mobile_harbor.classes.pedido.PedidoPrestadorCriacao
-import com.example.apl_mobile_harbor.classes.pedido.PedidoProdutoCriacao
 import com.example.apl_mobile_harbor.classes.pedido.formatDate
 import com.example.apl_mobile_harbor.classes.prestador.Prestador
 import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
 import com.example.apl_mobile_harbor.view_models.prestador.PrestadorViewModel
 import com.example.apl_mobile_harbor.view_models.produto.ProdutoViewModel
 import com.example.apl_mobile_harbor.view_models.servico.ServicoViewModel
-import com.google.gson.Gson
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -69,11 +64,9 @@ fun EditarServicoScreen(
     prestadorViewModel: PrestadorViewModel = koinViewModel()
 ) {
     val pedido by pedidosViewModel.pedidoAtual.observeAsState()
-    var servicoSelectionState by remember { mutableStateOf<Map<Int, Boolean>>(emptyMap()) }
+    val servicoSelectionState by pedidosViewModel.servicoSelectionState.observeAsState(emptyMap())
+    val prestadorSelectionState by pedidosViewModel.prestadorSelectionState.observeAsState(emptyMap())
     var produtoSelectionState by remember { mutableStateOf<Map<Int, Int>>(emptyMap()) }
-    val prestadorSelectionState = remember { mutableStateMapOf<Int, Prestador?>() }
-    val pedidoPrestador = remember { mutableStateListOf<PedidoPrestadorCriacao>() }
-    val pedidoProduto = remember { mutableStateListOf<PedidoProdutoCriacao>() }
 
     LaunchedEffect(codigo) {
         pedidosViewModel.getPedidoPorCodigo(codigo)
@@ -85,13 +78,7 @@ fun EditarServicoScreen(
 
     LaunchedEffect(pedido) {
         pedido?.let {
-            // Inicializa o estado de seleção dos serviços com base no pedido atual
-            servicoSelectionState = servicoViewModel.servicos.associate { servico ->
-                val isChecked = it.pedidoPrestador.any { prestador ->
-                    prestador.idServico == servico.id
-                }
-                servico.id to isChecked
-            }
+            pedidosViewModel.carregarEstadosDeServico(it, servicoViewModel.servicos)
 
             // Inicializa o estado de seleção dos produtos com base no pedido atual
             produtoSelectionState = produtoViewModel.produtos.associate { produto ->
@@ -102,15 +89,7 @@ fun EditarServicoScreen(
                 produto.id to quantidade
             }
 
-            // Inicializa o estado de seleção dos prestadores para cada serviço no pedido
-            it.pedidoPrestador.forEach { pedidoPrestador ->
-                // Encontra o prestador correspondente ao id do pedido
-                val prestador = prestadorViewModel.prestadores.find { p ->
-                    p.id == pedidoPrestador.idPrestador
-                }
-                // Associa o prestador ao idServico correspondente no estado de seleção
-                prestadorSelectionState[pedidoPrestador.idServico] = prestador
-            }
+            pedidosViewModel.carregarEstadosDePrestador(it, prestadorViewModel.prestadores)
         }
     }
 
@@ -178,7 +157,7 @@ fun EditarServicoScreen(
                     val nomeDividido by remember { mutableStateOf(separarNomeCompleto(it.nomeCliente)) }
                     CustomTextField(
                         label = stringResource(R.string.label_nome),
-                        nomeDividido.first,
+                        "${nomeDividido.first} ${nomeDividido.second}",
                         onChange = { novoValor ->
                             pedidosViewModel.atualizarAtributoCliente { cliente ->
                                 cliente.copy(nome = novoValor)
@@ -255,20 +234,15 @@ fun EditarServicoScreen(
                     Column(verticalArrangement = Arrangement.Center) {
                         val isChecked = servicoSelectionState[servico.id] ?: false
 
-                        // Aqui você pode inicializar o currentPrestador corretamente
-                        var currentPrestador by remember { mutableStateOf(prestadorSelectionState[servico.id]) }
-
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
-                                checked = isChecked,
+                                checked = isChecked, // Estado da checkbox para o serviço
                                 onCheckedChange = { checked ->
-                                    servicoSelectionState = servicoSelectionState.toMutableMap().apply {
-                                        this[servico.id] = checked
-                                    }
-                                    if (!checked) {
-                                        pedidoPrestador.removeIf { it.servicoId == servico.id } // remove todos os prestadores desse serviço
-                                        currentPrestador = null // redefine o prestador atual para null
-                                    }
+                                    // Atualiza o estado no ViewModel
+                                    pedidosViewModel.atualizarServicoSelecionado(servico.id, checked)
+
+                                    // Remove ou redefine os prestadores vinculados ao serviço, conforme necessário
+                                    pedidosViewModel.atualizarPedidoPrestador(servico.id, if (checked) null else null)
                                 }
                             )
                             Text(
@@ -279,21 +253,23 @@ fun EditarServicoScreen(
                         }
 
                         if (isChecked) {
-                            // Atualiza o currentPrestador com o prestador correspondente ao serviço
-                            currentPrestador = prestadorSelectionState[servico.id]
+                            prestadorViewModel.prestadores.forEach { prestador ->
+                                Row(modifier = Modifier.padding(start = 16.dp)) {
+                                    PrestadorDropdown(
+                                        selectedPrestador = prestadorSelectionState[prestador.id],
+                                        onPrestadorSelected = { selectedPrestador ->
+                                            // Atualiza o prestador selecionado para o serviço
+                                            pedidosViewModel.atualizarPrestadorParaServico(servico.id, prestador.id)
 
-                            Row(modifier = Modifier.padding(start = 16.dp)) {
-                                PrestadorDropdown(
-                                    selectedPrestador = currentPrestador,
-                                    onPrestadorSelected = { selectedPrestador ->
-                                        currentPrestador = selectedPrestador
-                                        pedidosViewModel.atualizarPedidoPrestador(servico.id, selectedPrestador.id)
-                                        // Atualiza o prestadorSelectionState para refletir a mudança
-                                        prestadorSelectionState[servico.id] = currentPrestador
-                                    },
-                                    prestadorViewModel = prestadorViewModel,
-                                )
-
+                                            // Atualiza a associação entre o prestador e o serviço
+                                            pedidosViewModel.atualizarPedidoPrestador(
+                                                servico.id,
+                                                selectedPrestador.id
+                                            )
+                                        },
+                                        prestadorViewModel = prestadorViewModel,
+                                    )
+                                }
                             }
                         }
                     }
@@ -343,7 +319,8 @@ fun EditarServicoScreen(
 
                 Button(
                     onClick = {
-
+                        pedido?.let { pedidosViewModel.atualizarPedidoCriacao(it.idPedido) }
+                        navController.popBackStack()
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
@@ -501,12 +478,14 @@ fun PrestadorDropdown(
     onPrestadorSelected: (Prestador) -> Unit,
     prestadorViewModel: PrestadorViewModel,
 ) {
-    val prestadores = remember { mutableStateListOf(*prestadorViewModel.prestadores.toTypedArray()) }
+    // Carrega a lista de prestadores
+    val prestadores = remember { prestadorViewModel.prestadores }
 
+    // Estado para controlar o menu dropdown
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(selectedPrestador?.nome ?: "") }
 
-    // Atualiza o valor inicial do campo caso `selectedPrestador` mude
+    // Atualiza o valor do selectedText caso selectedPrestador mude
     LaunchedEffect(selectedPrestador) {
         selectedText = selectedPrestador?.nome ?: ""
     }
@@ -553,6 +532,7 @@ fun PrestadorDropdown(
         }
     }
 }
+
 
 
 fun separarNomeCompleto(nomeCompleto: String): Pair<String, String> {
