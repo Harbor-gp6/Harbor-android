@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,6 +48,12 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
 
     private val _pedidoCriacao = mutableStateOf<PedidoCriacao?>(null)
     val pedidoCriacao: State<PedidoCriacao?> = _pedidoCriacao
+
+    val isProcessando = mutableStateOf(false)
+
+    init {
+        getEmpresa()
+    }
 
     fun atualizarListaDePedidos() {
         viewModelScope.launch {
@@ -199,6 +206,7 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
         val pedidoCriacao = _pedidoCriacao.value
         if (pedidoCriacao != null) {
             viewModelScope.launch {
+                isProcessando.value = true
                 try {
                     val response = apiHarbor.atualizarPedido(pedidoCriacao, id) // Chame sua função de API para atualização
                     if (response.isSuccessful) {
@@ -209,6 +217,8 @@ class PedidosViewModel(private val tokenManager: TokenManager, private val apiHa
                     }
                 } catch (err: Exception) {
                     Log.e("api", err.toString())
+                } finally {
+                    isProcessando.value = false
                 }
             }
         } else {

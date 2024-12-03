@@ -2,6 +2,7 @@ package com.example.apl_mobile_harbor.componentes
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,10 +53,15 @@ import com.example.apl_mobile_harbor.activities.perfil.PerfilActivity
 import com.example.apl_mobile_harbor.R
 import com.example.apl_mobile_harbor.activities.app.AppActivity
 import com.example.apl_mobile_harbor.activities.login.LoginActivity
+import com.example.apl_mobile_harbor.classes.atividade.formatDateToActivity
 import com.example.apl_mobile_harbor.classes.auth.TokenManager
+import com.example.apl_mobile_harbor.classes.pedido.formatDate
+import com.example.apl_mobile_harbor.view_models.atividade.AtividadeViewModel
 import com.example.apl_mobile_harbor.view_models.login.LoginViewModel
+import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDateTime
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -222,8 +229,10 @@ fun MenuCard(
 }
 
 @Composable
-fun RecentActivities() {
-    val activities = remember { mutableStateListOf<String>("Teste") }
+fun RecentActivities(
+    atividadeViewModel: AtividadeViewModel = koinViewModel()
+    ) {
+    var contador by remember { mutableStateOf(0) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -231,15 +240,32 @@ fun RecentActivities() {
     ) {
         Text(text = stringResource(R.string.atividade_recente), fontWeight = FontWeight.Bold)
         LazyColumn {
-            items(items = activities.toList()) {
-                ActivityItem()
+            items(items = atividadeViewModel.atividadesRecentes) { atividade ->
+                atividade.pedido.let {
+                    if (it != null) {
+                            ActivityItem(
+                                atividade.nomeCliente,
+                                atividade.servico,
+                                formatDateToActivity(it.dataAgendamento),
+                                formatDate(it.dataAgendamento),
+                                formatDate(atividade.dataCriacao)
+                            )
+                            contador++
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun ActivityItem() {
+fun ActivityItem(
+    nomeCliente: String,
+    servico: String,
+    dataAgendamento: String,
+    horaAgendamento: String,
+    dataCriacao: String
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -265,15 +291,15 @@ fun ActivityItem() {
             Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(
-                    text = stringResource(R.string.pedido_agendado_usuario, "Marcos"),
+                    text = stringResource(R.string.pedido_agendado_usuario, nomeCliente),
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = stringResource(
                         R.string.data_hora_pedido,
-                        "Corte de cabelo",
-                        "hoje", "17:00"
+                        servico,
+                        dataAgendamento, horaAgendamento
                     ),
                     color = Color.Black
                 )

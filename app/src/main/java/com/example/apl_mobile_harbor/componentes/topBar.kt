@@ -39,9 +39,11 @@ fun TopBar(title: String, navController: NavController, isPerfilActivity: Boolea
             painter = painterResource(id = R.drawable.seta_esquerda),
             contentDescription = "Back",
             tint = Color.Black,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier
+                .size(24.dp)
                 .clickable(onClick = {
-                    if (isPerfilActivity == true) {
+                    val currentRoute = navController.currentBackStackEntry?.destination?.route
+                    if (isPerfilActivity == true && currentRoute == "viewPerfilScreen") {
                         val activity = (context as? Activity)
                         activity?.finish()
                     } else {
