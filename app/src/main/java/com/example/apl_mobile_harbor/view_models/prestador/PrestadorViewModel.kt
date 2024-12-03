@@ -23,17 +23,10 @@ data class PrestadorViewModel(val apiHarbor: ApiHarbor, val usuario: Usuario): V
     val _prestadorAtual = MutableLiveData<Prestador?>()
     val prestadorAtual: LiveData<Prestador?> get() = _prestadorAtual
 
-    val _usuarioAtualizacao = MutableLiveData(
-        UsuarioAtualizacao(
-            nome = separarNomeCompleto(usuario.nome).first,
-            sobrenome = separarNomeCompleto(usuario.nome).second,
-            telefone = null,
-            cpf = null,
-            email = usuario.email,
-            cargo = null
-        )
-    )
-    val usuarioAtualizacao: LiveData<UsuarioAtualizacao?> get() = _usuarioAtualizacao
+    val _usuarioAtualizacao = mutableStateOf<UsuarioAtualizacao?>(UsuarioAtualizacao(null, null, null, null, null, null))
+
+    val _isProcessando = MutableLiveData(false)
+    val isProcessando: LiveData<Boolean> get() = _isProcessando
 
     init {
         usuario.userId?.let { getPrestadorPorId(it) }
@@ -94,6 +87,34 @@ data class PrestadorViewModel(val apiHarbor: ApiHarbor, val usuario: Usuario): V
 
     fun atualizarEmail(email: String) {
         _usuarioAtualizacao.value?.email = email
+    }
+    
+    fun atualizarPerfil(cpf: String) {
+        _isProcessando.value = true
+        viewModelScope.launch {
+            if (_usuarioAtualizacao.value != null) {
+                try {
+                    val response = apiHarbor.atualizarPerfil(_usuarioAtualizacao.value!!, cpf)
+                    if (response.isSuccessful) {
+                        Log.d("api", "Perfil atualizado com sucesso")
+
+                        try {
+                            val response2 = apiHarbor.getPrestadorPorId(usuario.userId!!)
+                        } catch (err: Exception) {
+                            Log.e("api", err.toString())
+                        } finally {
+                            _isProcessando.value = false
+                        }
+                    } else {
+                        Log.e("api", "Erro ao atualizar perfil")
+                    }
+                } catch (err: Exception) {
+                    Log.e("api", err.toString())
+                } finally {
+                    _isProcessando.value = false
+                }
+            }
+        }
     }
 
 }

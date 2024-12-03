@@ -37,18 +37,23 @@ fun EditarPerfil(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopBar("Meu perfil", navController, true)
-        ProfileEditSection()
+        ProfileEditSection(navController)
         Spacer(modifier = Modifier.weight(1f))
     }
 }
 
 @Composable
-fun ProfileEditSection(prestadorViewModel: PrestadorViewModel = koinViewModel()) {
+fun ProfileEditSection(
+    navController: NavHostController,
+    prestadorViewModel: PrestadorViewModel = koinViewModel()
+) {
     val usuario by prestadorViewModel.prestadorAtual.observeAsState()
     var nome by remember(usuario?.nome) { mutableStateOf(usuario?.nome ?: "") }
     var sobrenome by remember(usuario?.sobrenome) { mutableStateOf(usuario?.sobrenome ?: "") }
     var telefone by remember(usuario?.telefone) { mutableStateOf(usuario?.telefone ?: "") }
     var email by remember(usuario?.email) { mutableStateOf(usuario?.email ?: "") }
+
+    val isProcessando by prestadorViewModel.isProcessando.observeAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -98,7 +103,7 @@ fun ProfileEditSection(prestadorViewModel: PrestadorViewModel = koinViewModel())
 
         Button(
             onClick = {
-
+                navController.popBackStack()
             },
             modifier = Modifier.weight(1f),
             colors = ButtonDefaults.buttonColors(
@@ -107,7 +112,8 @@ fun ProfileEditSection(prestadorViewModel: PrestadorViewModel = koinViewModel())
         ) {  Text(stringResource(R.string.botao_cancelar)) }
         Button(
             onClick = {
-
+                prestadorViewModel.atualizarPerfil(usuario?.cpf!!)
+                navController.popBackStack()
             },
             modifier = Modifier.weight(1f),
             colors = ButtonDefaults.buttonColors(

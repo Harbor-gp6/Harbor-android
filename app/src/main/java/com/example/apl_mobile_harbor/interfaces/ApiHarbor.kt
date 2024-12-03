@@ -31,52 +31,52 @@ interface ApiHarbor {
         val token: String
     )
 
-    @POST("/usuarios/login")
+    @POST("/api/usuarios/login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
-    @GET("/pedidos/pedidosAbertos")
+    @GET("/api/pedidos/pedidosAbertos")
     suspend fun getPedidos(): Response<List<Pedido>>
 
-    @GET("/pedidos/pedidosPorData")
+    @GET("/api/pedidos/pedidosPorData")
     suspend fun getPedidosPorData(@Query("data") data: String): Response<List<Pedido>>
 
-    @GET("/pedidos/{codigoPedido}")
+    @GET("/api/pedidos/{codigoPedido}")
     suspend fun getPedidoPorCodigo(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
 
-    @GET("/avaliacoes/media-prestador")
+    @GET("/api/avaliacoes/media-prestador")
     suspend fun getMedia(): Response<Double>
 
-    @GET("/servicos")
+    @GET("/api/servicos")
     suspend fun getServicos(): Response<List<Servico>>
 
-    @GET("/produtos")
+    @GET("/api/produtos")
     suspend fun getProdutos(): Response<List<Produto>>
 
-    @GET("/usuarios/empresa/{empresaId}")
+    @GET("/api/usuarios/empresa/{empresaId}")
     suspend fun getPrestadores(@Path("empresaId") empresaId: Int): Response<List<Prestador>>
 
-    @GET("/usuarios/{id}")
+    @GET("/api/usuarios/{id}")
     suspend fun getPrestadorPorId(@Path("id") id: Int): Response<Prestador>
 
-    @GET("/empresas/{id}")
+    @GET("/api/empresas/{id}")
     suspend fun getEmpresaPorId(@Path("id") id: Int): Response<Empresa>
 
-    @GET("/avaliacoes/avaliacoes-prestador")
+    @GET("/api/avaliacoes/avaliacoes-prestador")
     suspend fun getAvaliacoes(): Response<List<Avaliacao>>
 
-    @GET("/atividades-pedido/atividade-pedido-por-prestador")
+    @GET("/api/atividades-pedido/atividade-pedido-por-prestador")
     suspend fun getAtividades(): Response<List<Atividade>>
 
-    @POST("/pedidos/finalizarPedido/{codigoPedido}")
+    @POST("/api/pedidos/finalizarPedido/{codigoPedido}")
     suspend fun finalizarPedido(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
 
-    @POST("/pedidos/cancelarPedido/{codigoPedido}")
+    @POST("/api/pedidos/cancelarPedido/{codigoPedido}")
     suspend fun cancelarPedido(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
 
-    @PATCH("/pedidos/atualizarPedidoV2")
+    @PATCH("/api/pedidos/atualizarPedidoV2")
     suspend fun atualizarPedido(@Body pedido: PedidoCriacao, @Query("idPedido") pedidoId: Int): Response<Pedido>
 
-    @PUT("/usuarios/perfil/{cpf}")
+    @PUT("/api/usuarios/perfil/{cpf}")
     suspend fun atualizarPerfil(@Body usuario: UsuarioAtualizacao, @Path("cpf") cpf: String): Response<Usuario>
 
 }

@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.apl_mobile_harbor.R
 import com.example.apl_mobile_harbor.view_models.avaliacao.AvaliacaoViewModel
+import com.example.apl_mobile_harbor.view_models.pedidos.PedidosViewModel
+import com.example.apl_mobile_harbor.view_models.prestador.PrestadorViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -46,14 +50,24 @@ fun ProfileScreen(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopBar("Meu perfil", navController, true)
-        ProfileImageSection()
-        ContactInfoSection(navController)
+        ProfileImageSection(navController = navController)
         Spacer(modifier = Modifier.weight(1f))
     }
 }
 
 @Composable
-fun ProfileImageSection() {
+fun ProfileImageSection(
+    prestadorViewModel: PrestadorViewModel = koinViewModel(),
+    pedidosViewModel: PedidosViewModel = koinViewModel(),
+    navController: NavHostController
+) {
+    val prestador by prestadorViewModel.prestadorAtual.observeAsState()
+
+    LaunchedEffect(Unit) {
+        if (prestador != null) {
+            prestadorViewModel.getPrestadorPorId(prestador?.id!!)
+        }
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(16.dp)
@@ -68,19 +82,20 @@ fun ProfileImageSection() {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Tiago Romano",
+            text = (prestador?.nome + " " + prestador?.sobrenome) ?: "",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(4.dp))
-        Row ( horizontalArrangement = Arrangement.spacedBy(16.dp)){
-            Text(text = "30 anos", fontSize = 14.sp, color = Color.Black)
-            Text(text = "-", fontSize = 14.sp, color = Color.Black)
-            Text(text = "Masculino", fontSize = 14.sp, color = Color.Black)
-        }
         Spacer(modifier = Modifier.height(30.dp))
         RatingSection()
     }
+    ContactInfoSection(
+        navController,
+        prestador?.email ?: "",
+        prestador?.telefone ?: "",
+        pedidosViewModel.empresaPrestador.value?.endereco?.logradouro ?: "",
+        pedidosViewModel.empresaPrestador.value?.endereco?.numero ?: ""
+        )
 }
 
 @Composable
@@ -101,7 +116,7 @@ fun RatingSection(
         Spacer(modifier = Modifier.width(4.dp))
         Image(
             painter = painterResource(id = R.drawable.estrela_cheia),
-            contentDescription = "Profile Picture",
+            contentDescription = "Rating",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(20.dp)
@@ -112,7 +127,13 @@ fun RatingSection(
 }
 
 @Composable
-fun ContactInfoSection(navController: NavHostController) {
+fun ContactInfoSection(
+    navController: NavHostController,
+    email: String,
+    telefone: String,
+    endereco: String,
+    numero: String
+) {
     Row(
         modifier = Modifier.fillMaxWidth()
             .padding(end = 50.dp),
@@ -136,11 +157,11 @@ fun ContactInfoSection(navController: NavHostController) {
     }
     Row {
         Column(modifier = Modifier.padding(16.dp)) {
-            ContactItem(imageRes = R.drawable.telefone, info = "(82) 9999-9999")
-            ContactItem(imageRes = R.drawable.email, info = "barbeiro@gmail.com")
+            ContactItem(imageRes = R.drawable.telefone, info = telefone)
+            ContactItem(imageRes = R.drawable.email, info = email)
             ContactItem(
                 imageRes = R.drawable.endereco,
-                info = "Rua Bipirópa, 200, apto 651, Ponta do Canto, Piauí - RC"
+                info = "$endereco, $numero"
             )
         }
     }
