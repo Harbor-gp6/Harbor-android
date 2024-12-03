@@ -1,5 +1,7 @@
 package com.example.apl_mobile_harbor.interfaces
 
+import com.example.apl_mobile_harbor.classes.atividade.Atividade
+import com.example.apl_mobile_harbor.classes.auth.Usuario
 import com.example.apl_mobile_harbor.classes.avaliacao.Avaliacao
 import com.example.apl_mobile_harbor.classes.empresa.Empresa
 import com.example.apl_mobile_harbor.classes.pedido.Pedido
@@ -7,6 +9,7 @@ import com.example.apl_mobile_harbor.classes.pedido.PedidoCriacao
 import com.example.apl_mobile_harbor.classes.prestador.Prestador
 import com.example.apl_mobile_harbor.classes.produto.Produto
 import com.example.apl_mobile_harbor.classes.servico.Servico
+import com.example.apl_mobile_harbor.classes.usuario.UsuarioAtualizacao
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -61,6 +64,9 @@ interface ApiHarbor {
     @GET("/avaliacoes/avaliacoes-prestador")
     suspend fun getAvaliacoes(): Response<List<Avaliacao>>
 
+    @GET("/atividades-pedido/atividade-pedido-por-prestador")
+    suspend fun getAtividades(): Response<List<Atividade>>
+
     @POST("/pedidos/finalizarPedido/{codigoPedido}")
     suspend fun finalizarPedido(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
 
@@ -68,5 +74,9 @@ interface ApiHarbor {
     suspend fun cancelarPedido(@Path("codigoPedido") codigoPedido: String): Response<Pedido>
 
     @PATCH("/pedidos/atualizarPedidoV2")
-    suspend fun atualizarPedido(@Body pedido: PedidoCriacao, @Query("pedidoId") pedidoId: Int): Response<Pedido>
+    suspend fun atualizarPedido(@Body pedido: PedidoCriacao, @Query("idPedido") pedidoId: Int): Response<Pedido>
+
+    @PUT("/usuarios/perfil/{cpf}")
+    suspend fun atualizarPerfil(@Body usuario: UsuarioAtualizacao, @Path("cpf") cpf: String): Response<Usuario>
+
 }

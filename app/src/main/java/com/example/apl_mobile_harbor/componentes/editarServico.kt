@@ -73,7 +73,6 @@ fun EditarServicoScreen(
         servicoViewModel.getServicos()
         produtoViewModel.getProdutos()
         prestadorViewModel.getPrestadores()
-        pedidosViewModel.getEmpresa()
     }
 
     LaunchedEffect(pedido) {
@@ -253,23 +252,27 @@ fun EditarServicoScreen(
                         }
 
                         if (isChecked) {
-                            prestadorViewModel.prestadores.forEach { prestador ->
-                                Row(modifier = Modifier.padding(start = 16.dp)) {
-                                    PrestadorDropdown(
-                                        selectedPrestador = prestadorSelectionState[prestador.id],
-                                        onPrestadorSelected = { selectedPrestador ->
-                                            // Atualiza o prestador selecionado para o serviço
-                                            pedidosViewModel.atualizarPrestadorParaServico(servico.id, prestador.id)
+                            val pedidoPrestador = pedido?.pedidoPrestador?.find { it.idServico == servico.id } // ID do prestador associado ao serviço
+                            val prestadorAtual = pedidoPrestador.let { prestadorSelectionState[it?.idPrestador] }
 
-                                            // Atualiza a associação entre o prestador e o serviço
-                                            pedidosViewModel.atualizarPedidoPrestador(
-                                                servico.id,
-                                                selectedPrestador.id
-                                            )
-                                        },
-                                        prestadorViewModel = prestadorViewModel,
-                                    )
-                                }
+                            Row(modifier = Modifier.padding(start = 16.dp, top = 8.dp)) {
+                                PrestadorDropdown(
+                                    selectedPrestador = prestadorAtual,  // Passa o prestador encontrado, não o ID
+                                    onPrestadorSelected = { selectedPrestador ->
+                                        // Atualiza o prestador selecionado para o serviço
+                                        pedidosViewModel.atualizarPrestadorParaServico(
+                                            servico.id,
+                                            selectedPrestador.id
+                                        )
+
+                                        // Atualiza a associação entre o prestador e o serviço
+                                        pedidosViewModel.atualizarPedidoPrestador(
+                                            servico.id,
+                                            selectedPrestador.id
+                                        )
+                                    },
+                                    prestadorViewModel = prestadorViewModel
+                                )
                             }
                         }
                     }
@@ -320,7 +323,7 @@ fun EditarServicoScreen(
                 Button(
                     onClick = {
                         pedido?.let { pedidosViewModel.atualizarPedidoCriacao(it.idPedido) }
-                        navController.popBackStack()
+
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
@@ -423,15 +426,6 @@ fun FormaPagamentoDropdown(
 
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(selectedForma) }
-    var pagamentoEnum by remember { mutableStateOf(when (selectedText) {
-        "Crédito" -> "1"
-        "Débito" -> "2"
-        "Dinheiro" -> "3"
-        "PIX" -> "4"
-        else -> ""
-
-    }
-    )}
 
     Box(modifier = Modifier.fillMaxWidth()) {
         OutlinedTextField(
@@ -462,7 +456,14 @@ fun FormaPagamentoDropdown(
                 DropdownMenuItem(
                     onClick = {
                         selectedText = formaPagamento
-                        onFormaSelected(pagamentoEnum)
+                        val pagamentoEnum = when (formaPagamento) {
+                            "Crédito" -> "1"
+                            "Débito" -> "2"
+                            "Dinheiro" -> "3"
+                            "PIX" -> "4"
+                            else -> ""
+                        }
+                        onFormaSelected(pagamentoEnum) // Atualiza com o valor correto
                         expanded = false
                     },
                     text = { Text(formaPagamento) }
@@ -471,6 +472,7 @@ fun FormaPagamentoDropdown(
         }
     }
 }
+
 
 @Composable
 fun PrestadorDropdown(

@@ -40,10 +40,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.apl_mobile_harbor.R
+import com.example.apl_mobile_harbor.componentes.EditarPerfil
+import com.example.apl_mobile_harbor.componentes.ProfileScreen
 import com.example.apl_mobile_harbor.componentes.TopBar
 import com.example.apl_mobile_harbor.view_models.avaliacao.AvaliacaoViewModel
+import com.example.apl_mobile_harbor.view_models.prestador.PrestadorViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
 
@@ -52,142 +57,25 @@ class PerfilActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                ProfileScreen(rememberNavController())
+                NavegacaoPerfil(rememberNavController())
             }
         }
     }
 }
 
 @Composable
-fun ProfileScreen(navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF2F2F2)),
-        horizontalAlignment = Alignment.CenterHorizontally
+fun NavegacaoPerfil(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "viewPerfilScreen",
     ) {
-        TopBar("Meu perfil", navController, true)
-        ProfileImageSection()
-        ContactInfoSection()
-        Spacer(modifier = Modifier.weight(1f))
-    }
-}
-
-@Composable
-fun ProfileImageSection() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.tiago),
-            contentDescription = "Profile Picture",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Tiago Romano",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Row ( horizontalArrangement = Arrangement.spacedBy(16.dp)){
-            Text(text = "30 anos", fontSize = 14.sp, color = Color.Black)
-            Text(text = "-", fontSize = 14.sp, color = Color.Black)
-            Text(text = "Masculino", fontSize = 14.sp, color = Color.Black)
+        composable("viewPerfilScreen") {
+            ProfileScreen(navController)
         }
-        Spacer(modifier = Modifier.height(30.dp))
-        RatingSection()
-    }
-}
-
-@Composable
-fun RatingSection(
-    avaliacaoViewModel: AvaliacaoViewModel = koinViewModel()
-) {
-
-    var bool by remember{ mutableStateOf(true) }
-
-    LaunchedEffect(key1 = bool) {
-        avaliacaoViewModel.getMedia()
-        avaliacaoViewModel.getAvaliacoes()
-        bool = false
-    }
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = avaliacaoViewModel.mediaPrestador.value.toString(), fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.width(4.dp))
-        Image(
-            painter = painterResource(id = R.drawable.estrela_cheia),
-            contentDescription = "Profile Picture",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(20.dp)
-        )
-        Spacer(modifier = Modifier.width(120.dp))
-        Text(text = "${avaliacaoViewModel.avaliacoesPrestador.size} avaliações", fontSize = 14.sp, color = Color.Black)
-    }
-}
-
-@Composable
-fun ContactInfoSection() {
-    Row(
-        modifier = Modifier.fillMaxWidth()
-            .padding(end = 50.dp),
-        horizontalArrangement = Arrangement.End
-    ) {
-        Button(
-            onClick = {
-
-            },
-            modifier = Modifier
-                .padding(top = 20.dp)
-                .width(90.dp)
-                .height(40.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF0E28AC)
-            ),
-            shape = RoundedCornerShape(20)
-        ) {
-            Text("Editar")
-        }
-    }
-    Row {
-        Column(modifier = Modifier.padding(16.dp)) {
-            ContactItem(imageRes = R.drawable.telefone, info = "(82) 9999-9999")
-            ContactItem(imageRes = R.drawable.email, info = "barbeiro@gmail.com")
-            ContactItem(
-                imageRes = R.drawable.endereco,
-                info = "Rua Bipirópa, 200, apto 651, Ponta do Canto, Piauí - RC"
-            )
+        composable("editPerfilScreen") {
+            EditarPerfil(navController)
         }
     }
 }
 
-@Composable
-fun ContactItem(imageRes: Int, info: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = null,
-            modifier = Modifier
-                .size(50.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = info, fontSize = 16.sp, color = Color.Black)
-    }
-}
 
-@Preview(showSystemUi = true)
-@Composable
-fun ProfileScreenPreview() {
-    ProfileScreen(navController = rememberNavController())
-}
